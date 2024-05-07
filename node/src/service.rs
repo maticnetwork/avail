@@ -226,7 +226,7 @@ pub fn new_partial(
 	let telemetry_handle = telemetry.as_ref().map(|t| t.handle());
 	let custom_telemetry_worker = CustomTelemetryWorker {
 		handle: telemetry_handle,
-		sampling_interval_ms: 20_000u128,
+		sampling_interval_ms: 300_000u128,
 	};
 	task_manager
 		.spawn_handle()
