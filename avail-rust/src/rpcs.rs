@@ -1,16 +1,53 @@
+use crate::primitives::kate::{Cells, Rows};
+use crate::H256;
 use avail_core::data_proof::ProofResponse;
 
 use crate::avail::runtime_types::frame_system::limits::BlockLength;
 use crate::from_substrate::{FeeDetails, NodeRole, PeerInfo, RuntimeDispatchInfo, SyncState};
-use crate::{AvailBlockDetailsRPC, AvailHeader, BlockHash, BlockNumber, Cell, GDataProof, GRow};
-use subxt::backend::legacy::rpc_methods::{Bytes, SystemHealth};
+use crate::{
+	AvailBlockDetailsRPC, AvailConfig, AvailHeader, BlockHash, BlockNumber, Cell, GDataProof, GRow,
+};
+use subxt::backend::legacy::rpc_methods::{Bytes, LegacyRpcMethods, SystemHealth};
 use subxt::backend::rpc::RpcClient;
 use subxt::rpc_params;
+
+pub use jsonrpsee::core::client::Client as JsonRpcCLient;
+use jsonrpsee::proc_macros::rpc;
 
 /// Arbitrary properties defined in chain spec as a JSON object
 pub type Properties = serde_json::map::Map<String, serde_json::Value>;
 
+mod jsonrpsee_helpers {
+	pub use jsonrpsee::{
+		client_transport::ws::{self, EitherStream, Url, WsTransportClientBuilder},
+		core::client::{Client, Error},
+	};
+	use tokio_util::compat::Compat;
+
+	pub type Sender = ws::Sender<Compat<EitherStream>>;
+	pub type Receiver = ws::Receiver<Compat<EitherStream>>;
+
+	/// Build WS RPC client from URL
+	pub async fn client(url: &str) -> Result<Client, Error> {
+		let (sender, receiver) = ws_transport(url).await?;
+		Ok(Client::builder()
+			.max_buffer_capacity_per_subscription(4096)
+			.build_with_tokio(sender, receiver))
+	}
+
+	async fn ws_transport(url: &str) -> Result<(Sender, Receiver), Error> {
+		let url = Url::parse(url).map_err(|e| Error::Transport(e.into()))?;
+		WsTransportClientBuilder::default()
+			.build(url)
+			.await
+			.map_err(|e| Error::Transport(e.into()))
+	}
+}
+
 pub struct Rpc {
+	pub client: RpcClient,
+	pub methods: LegacyRpcMethods<AvailConfig>,
+	pub rpc_methods: JsonRpcCLient,
 	pub kate: Kate,
 	pub author: Author,
 	pub chain: Chain,
@@ -21,13 +58,18 @@ pub struct Rpc {
 impl Rpc {
 	pub async fn new(endpoint: &str) -> Result<Self, Box<dyn std::error::Error>> {
 		let client = RpcClient::from_insecure_url(endpoint).await?;
+		let methods = LegacyRpcMethods::new(client.clone());
 		let kate = Kate::new(client.clone());
 		let author = Author::new(client.clone());
 		let chain: Chain = Chain::new(client.clone());
 		let system = System::new(client.clone());
 		let payment = Payment::new(client.clone());
 
+		let rpc_methods = jsonrpsee_helpers::client(endpoint.as_ref()).await.unwrap();
 		Ok(Self {
+			client,
+			methods,
+			rpc_methods,
 			kate,
 			author,
 			chain,
@@ -312,4 +354,19 @@ impl Kate {
 			.await?;
 		Ok(result)
 	}
+}
+
+#[rpc(client, namespace = "kate")]
+pub trait KateRpc {
+	#[method(name = "queryRows")]
+	async fn query_rows(&self, rows: Rows, block: H256) -> RpcResult<Vec<GRow>>;
+
+	#[method(name = "queryProof")]
+	async fn query_proof(&self, cells: Cells, block: H256) -> RpcResult<Vec<GDataProof>>;
+
+	#[method(name = "blockLength")]
+	async fn query_block_length(&self, block: H256) -> RpcResult<BlockLength>;
+
+	#[method(name = "queryDataProof")]
+	async fn query_data_proof(&self, transaction_index: u32, at: H256) -> RpcResult<ProofResponse>;
 }

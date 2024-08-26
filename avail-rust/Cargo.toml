@@ -27,6 +27,12 @@ tokio = { version = "1.21.2" }
 sp-core = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-8", default-features = false }
 kate-recovery = {  git = "https://github.com/availproject/avail-core", tag = "core-node-1", features = ["serde"] }
 bounded-collections = { version = "0.2.0", features = ["serde"] }
+jsonrpsee = { version = "0.22", features = [
+	"client",
+	"async-client",
+	"macros",
+] }
+tokio-util = { version = "0.7" }
 
 [patch.crates-io]
 sp-core = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-8" }
