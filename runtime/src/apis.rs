@@ -7,9 +7,9 @@ use crate::{
 };
 use avail_base::{HeaderExtensionBuilderData, ProvidePostInherent};
 use avail_core::{
+	block::header::HeaderExtension,
 	currency::Balance,
 	data_proof::{DataProof, ProofResponse, SubTrie},
-	header::HeaderExtension,
 	OpaqueExtrinsic,
 };
 

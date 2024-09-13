@@ -11,8 +11,8 @@ use avail_base::metrics::avail::{
 };
 use avail_core::{
 	app_extrinsic::AppExtrinsic,
-	header::{extension as he, HeaderExtension},
-	kate_commitment as kc, HeaderVersion,
+	block::header::{self, HeaderExtension, HeaderVersion},
+	kate_commitment as kc,
 };
 use kate::{
 	couscous::multiproof_params,
@@ -158,7 +158,7 @@ pub fn build_extension(
 	match version {
 		HeaderVersion::V3 => {
 			let commitment = kc::v3::KateCommitment::new(rows, cols, data_root, commitment);
-			he::v3::HeaderExtension {
+			header::v3::HeaderExtension {
 				app_lookup,
 				commitment,
 			}

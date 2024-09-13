@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use avail_core::header::Header as DaHeader;
+use avail_core::block::header::Header as DaHeader;
 use frame_support::{derive_impl, parameter_types, traits::ConstU32};
 use sp_core::H256;
 use sp_runtime::{
@@ -27,7 +27,7 @@ use crate::{self as frame_system, test_utils::TestRandomness, *};
 
 type Extrinsic = mocking::MockUncheckedExtrinsic<Test>;
 type BlockNumber = u32;
-type Header = DaHeader<BlockNumber, BlakeTwo256>;
+type Header = DaHeader;
 type Block = mocking::MockDaBlock<Test>;
 
 frame_support::construct_runtime!(
@@ -37,7 +37,7 @@ frame_support::construct_runtime!(
 	}
 );
 
-const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
+const NORMAL_DISPATCH_RATIO_PCT: Perbill = Perbill::from_percent(75);
 const MAX_BLOCK_WEIGHT: Weight = Weight::from_parts(1024, u64::MAX);
 
 parameter_types! {
@@ -61,19 +61,19 @@ parameter_types! {
 			weights.base_extrinsic = Weight::from_parts(5, 0);
 		})
 		.for_class(DispatchClass::Normal, |weights| {
-			weights.max_total = Some(NORMAL_DISPATCH_RATIO * MAX_BLOCK_WEIGHT);
+			weights.max_total = Some(NORMAL_DISPATCH_RATIO_PCT * MAX_BLOCK_WEIGHT);
 		})
 		.for_class(DispatchClass::Operational, |weights| {
 			weights.base_extrinsic = Weight::from_parts(10, 0);
 			weights.max_total = Some(MAX_BLOCK_WEIGHT);
 			weights.reserved = Some(
-				MAX_BLOCK_WEIGHT - NORMAL_DISPATCH_RATIO * MAX_BLOCK_WEIGHT
+				MAX_BLOCK_WEIGHT - NORMAL_DISPATCH_RATIO_PCT * MAX_BLOCK_WEIGHT
 			);
 		})
 		.avg_block_initialization(Perbill::from_percent(0))
 		.build_or_panic();
 	pub RuntimeBlockLength: limits::BlockLength =
-		limits::BlockLength::max_with_normal_ratio(1024, NORMAL_DISPATCH_RATIO);
+		limits::BlockLength::max_with_normal_ratio(1024, NORMAL_DISPATCH_RATIO_PCT);
 }
 
 parameter_types! {

@@ -100,9 +100,10 @@
 
 use avail_base::{HeaderExtensionBuilderData, HeaderExtensionDataFilter};
 use avail_core::{
+	block::header::{Header as DaHeader, HeaderExtension},
+	block::{ExtendedBlock, ExtendedHeader},
 	ensure,
-	header::{Header as DaHeader, HeaderExtension},
-	traits::{ExtendedBlock, ExtendedHeader, GetAppId, MaybeCaller},
+	traits::{GetAppId, MaybeCaller},
 };
 
 use codec::{Decode, Encode, EncodeLike, FullCodec, MaxEncodedLen};
@@ -312,7 +313,7 @@ pub mod pallet {
 			type BaseCallFilter = frame_support::traits::Everything;
 			type BlockHashCount = frame_support::traits::ConstU32<10>;
 			type OnSetCode = ();
-			type Header = DaHeader<u32, BlakeTwo256>;
+			type Header = DaHeader;
 			type MaxDiffAppIdPerBlock = ConstU32<1_024>;
 			type MaxTxPerAppIdPerBlock = ConstU32<8_192>;
 			type HeaderExtensionDataFilter = ();
@@ -411,7 +412,7 @@ pub mod pallet {
 			/// The set code logic, just the default since we're not a parachain.
 			type OnSetCode = ();
 
-			type Header = DaHeader<u32, BlakeTwo256>;
+			type Header = DaHeader;
 			type MaxDiffAppIdPerBlock = ConstU32<1_024>;
 			type MaxTxPerAppIdPerBlock = ConstU32<8_192>;
 			type HeaderExtensionDataFilter = ();

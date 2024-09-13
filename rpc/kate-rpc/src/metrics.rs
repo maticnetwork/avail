@@ -1,6 +1,6 @@
 use crate::{Cells, HashOf, Kate, KateApiServer, ProofResponse, Rows};
 
-use avail_core::{header::HeaderExtension, traits::ExtendedHeader, OpaqueExtrinsic};
+use avail_core::{block::header::HeaderExtension, block::ExtendedHeader, OpaqueExtrinsic};
 use da_runtime::apis::DataAvailApi;
 
 use crate::RTKateApi;

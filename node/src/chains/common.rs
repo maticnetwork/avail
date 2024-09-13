@@ -1,5 +1,5 @@
 use super::{get_account_id_from_seed, AuthorityKeys};
-use avail_core::{BLOCK_CHUNK_SIZE, DA_DISPATCH_RATIO};
+use avail_core::{BLOCK_CHUNK_SIZE, DA_DISPATCH_RATIO_PCT};
 use kate::config::{MAX_BLOCK_COLUMNS, MAX_BLOCK_ROWS};
 
 use da_runtime::{
@@ -15,6 +15,7 @@ use sc_telemetry::TelemetryEndpoints;
 use serde_json::{json, Value};
 use sp_core::crypto::AccountId32;
 use sp_core::sr25519::Public;
+use sp_runtime::Perbill;
 
 pub const PROTOCOL_ID: &str = "Avail";
 pub const TESTNET_TELEMETRY_URL: &str = "ws://telemetry.avail.tools:8001/submit";
@@ -98,7 +99,7 @@ pub fn runtime_genesis_config(
 		MAX_BLOCK_ROWS,
 		MAX_BLOCK_COLUMNS,
 		BLOCK_CHUNK_SIZE,
-		DA_DISPATCH_RATIO,
+		Perbill::from_percent(DA_DISPATCH_RATIO_PCT as u32),
 	)
 	.expect("Valid `BlockLength` genesis definition .qed");
 

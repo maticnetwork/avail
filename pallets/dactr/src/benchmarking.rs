@@ -5,7 +5,7 @@ use crate::Pallet;
 use avail_base::HeaderExtensionBuilderData;
 use avail_core::{
 	asdr::AppUncheckedExtrinsic, AppExtrinsic, BlockLengthColumns, BlockLengthRows,
-	BLOCK_CHUNK_SIZE, DA_DISPATCH_RATIO,
+	BLOCK_CHUNK_SIZE, DA_DISPATCH_RATIO_PCT,
 };
 use codec::{Decode, Encode};
 use frame_benchmarking::{
@@ -147,8 +147,13 @@ where
 		nb_tx = max_tx;
 	}
 
-	let block_length =
-		BlockLength::with_normal_ratio(rows, cols, BLOCK_CHUNK_SIZE, DA_DISPATCH_RATIO).unwrap();
+	let block_length = BlockLength::with_normal_ratio(
+		rows,
+		cols,
+		BLOCK_CHUNK_SIZE,
+		Perbill::from_percent(DA_DISPATCH_RATIO_PCT as u32),
+	)
+	.unwrap();
 	let data: Vec<u8> = generate_bounded::<AppDataFor<T>>(data_length).to_vec();
 	let txs = vec![AppExtrinsic::from(data.to_vec()); nb_tx as usize];
 

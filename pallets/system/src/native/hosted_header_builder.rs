@@ -3,9 +3,10 @@
 // !!!!
 
 use crate::{limits::BlockLength, Config, LOG_TARGET};
-#[cfg(feature = "std")]
-use avail_core::HeaderVersion;
-use avail_core::{header::HeaderExtension, traits::ExtendedHeader, AppExtrinsic};
+use avail_core::{
+	block::header::HeaderExtension, block::header::HeaderVersion, block::ExtendedHeader,
+	AppExtrinsic,
+};
 pub use kate::{
 	metrics::{IgnoreMetrics, Metrics},
 	Seed,
@@ -22,7 +23,7 @@ pub const MIN_WIDTH: usize = 4;
 pub mod da {
 	use core::marker::PhantomData;
 
-	use avail_core::header::{Header as DaHeader, HeaderExtension};
+	use avail_core::block::header::{Header as DaHeader, HeaderExtension};
 	use sp_runtime::traits::BlakeTwo256;
 
 	use super::*;
@@ -34,7 +35,7 @@ pub mod da {
 	pub struct HeaderExtensionBuilder<T: Config>(PhantomData<T>);
 
 	impl<T: Config> super::HeaderExtensionBuilder for HeaderExtensionBuilder<T> {
-		type Header = DaHeader<BlockNumber, BlakeTwo256>;
+		type Header = DaHeader;
 
 		#[inline]
 		fn build(

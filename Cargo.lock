@@ -866,9 +866,9 @@ dependencies = [
 [[package]]
 name = "avail-core"
 version = "0.6.2"
-source = "git+https://github.com/availproject/avail-core?tag=core-node-2#25ceee9ab6e15f88df873d03e6012a5982d3215c"
 dependencies = [
  "binary-merkle-tree",
+ "blake2b_simd",
  "bounded-collections",
  "derive_more",
  "ethabi-decode",
@@ -879,12 +879,11 @@ dependencies = [
  "parity-scale-codec",
  "scale-info",
  "serde",
- "sp-arithmetic",
+ "sha2 0.10.8",
+ "sha3",
  "sp-core",
- "sp-io",
  "sp-runtime",
  "sp-runtime-interface",
- "sp-std",
  "sp-trie",
  "static_assertions",
  "thiserror-no-std",
@@ -4487,7 +4486,6 @@ dependencies = [
 [[package]]
 name = "kate"
 version = "0.9.2"
-source = "git+https://github.com/availproject/avail-core?tag=core-node-2#25ceee9ab6e15f88df873d03e6012a5982d3215c"
 dependencies = [
  "avail-core",
  "derive_more",
@@ -4506,7 +4504,6 @@ dependencies = [
  "rayon",
  "serde",
  "serde_json",
- "sp-arithmetic",
  "sp-core",
  "static_assertions",
  "thiserror-no-std",
@@ -4515,7 +4512,6 @@ dependencies = [
 [[package]]
 name = "kate-recovery"
 version = "0.10.0"
-source = "git+https://github.com/availproject/avail-core?tag=core-node-2#25ceee9ab6e15f88df873d03e6012a5982d3215c"
 dependencies = [
  "avail-core",
  "derive_more",
@@ -4526,8 +4522,6 @@ dependencies = [
  "rand",
  "rand_chacha 0.3.1",
  "serde",
- "sp-arithmetic",
- "sp-std",
  "static_assertions",
  "thiserror-no-std",
 ]

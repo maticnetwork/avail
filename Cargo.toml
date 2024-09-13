@@ -22,12 +22,12 @@ homepage = "https://www.availproject.org/"
 
 
 [workspace.dependencies]
-avail-core = { git = "https://github.com/availproject/avail-core", tag = "core-node-2", default-features = false, features = [ "runtime"] }
-kate = { git = "https://github.com/availproject/avail-core", tag = "core-node-2", default-features = false }
-kate-recovery = { git = "https://github.com/availproject/avail-core", tag = "core-node-2", default-features = false  }
-# avail-core = { path = "../avail-core/core", default-features = false, features = [ "runtime"] }
-# kate = { path = "../avail-core/kate/", default-features = false }
-# kate-recovery = { path = "../avail-core/kate/recovery/", default-features = false}
+# avail-core = { git = "https://github.com/availproject/avail-core", tag = "core-node-2", default-features = false, features = [ "runtime"] }
+# kate = { git = "https://github.com/availproject/avail-core", tag = "core-node-2", default-features = false }
+# kate-recovery = { git = "https://github.com/availproject/avail-core", tag = "core-node-2", default-features = false  }
+avail-core = { path = "../core/core", default-features = false, features = [ "runtime"] }
+kate = { path = "../core/kate/", default-features = false }
+kate-recovery = { path = "../core/kate/recovery/", default-features = false}
 
 avail-base = { path = "base", default-features = false }
 da-control = { path = "pallets/dactr", default-features = false }

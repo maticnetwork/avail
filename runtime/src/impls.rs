@@ -9,7 +9,7 @@ use crate::{
 };
 use avail_core::{
 	currency::{Balance, AVAIL, CENTS, NANO_AVAIL, PICO_AVAIL},
-	AppId, NORMAL_DISPATCH_RATIO,
+	AppId, NORMAL_DISPATCH_RATIO_PCT,
 };
 
 use codec::{Decode, Encode, MaxEncodedLen};
@@ -808,7 +808,7 @@ parameter_types! {
 	pub const BlockHashCount: BlockNumber = 2400;
 	pub const Version: RuntimeVersion = VERSION;
 	pub RuntimeBlockLength: BlockLength =
-		BlockLength::max_with_normal_ratio(5 * 1024 * 1024, NORMAL_DISPATCH_RATIO);
+		BlockLength::max_with_normal_ratio(5 * 1024 * 1024, Perbill::from_percent(NORMAL_DISPATCH_RATIO_PCT as u32));
 }
 
 // Configure FRAME pallets to include in runtime.

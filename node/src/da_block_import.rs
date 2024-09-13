@@ -6,7 +6,7 @@
 /// Root`.
 use avail_base::metrics::avail::{MetricObserver, ObserveKind};
 use avail_core::{
-	ensure, header::HeaderExtension, BlockLengthColumns, BlockLengthRows, OpaqueExtrinsic,
+	block::header::HeaderExtension, ensure, BlockLengthColumns, BlockLengthRows, OpaqueExtrinsic,
 	BLOCK_CHUNK_SIZE,
 };
 use da_runtime::{

@@ -1,4 +1,4 @@
-use avail_core::{BlockLengthColumns, BlockLengthRows, NORMAL_DISPATCH_RATIO};
+use avail_core::{BlockLengthColumns, BlockLengthRows, NORMAL_DISPATCH_RATIO_PCT};
 use frame_support::{
 	construct_runtime, parameter_types,
 	traits::Randomness,
@@ -22,7 +22,7 @@ pub type AccountId = u64;
 pub type Balance = u128;
 pub type BlockNumber = u32;
 pub type Moment = u64;
-pub type Header = avail_core::header::Header<BlockNumber, BlakeTwo256>;
+pub type Header = avail_core::header::Header;
 pub type Signature = sp_runtime::testing::sr25519::Signature;
 pub type TestXt = test_xt::TestXt<RuntimeCall, SignedExtra>;
 pub type UncheckedExtrinsic = TestXt;
@@ -87,7 +87,7 @@ const MAXIMUM_BLOCK_WEIGHT: Weight =
 parameter_types! {
 	pub const BlockHashCount: BlockNumber = 250;
 	pub BlockWeights: frame_system::limits::BlockWeights =
-			frame_system::limits::BlockWeights::with_sensible_defaults(MAXIMUM_BLOCK_WEIGHT, NORMAL_DISPATCH_RATIO);
+			frame_system::limits::BlockWeights::with_sensible_defaults(MAXIMUM_BLOCK_WEIGHT, Perbill::from_percent(NORMAL_DISPATCH_RATIO_PCT as u32));
 	pub const DbWeight: RuntimeDbWeight = RuntimeDbWeight {
 		read: 10,
 		write: 100,

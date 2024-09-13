@@ -113,7 +113,7 @@ pub mod time {
 }
 
 pub mod system {
-	use avail_core::NORMAL_DISPATCH_RATIO;
+	use avail_core::NORMAL_DISPATCH_RATIO_PCT;
 	use frame_support::weights::constants::{ExtrinsicBaseWeight, WEIGHT_REF_TIME_PER_SECOND};
 	use frame_system::limits::BlockWeights as SystemBlockWeights;
 
@@ -144,20 +144,23 @@ pub mod system {
 				weights.base_extrinsic = ExtrinsicBaseWeight::get().saturating_mul(100);
 			})
 			.for_class(DispatchClass::Normal, |weights| {
-				weights.max_total = Some(NORMAL_DISPATCH_RATIO * MAXIMUM_BLOCK_WEIGHT);
+				weights.max_total = Some(Perbill::from_percent(NORMAL_DISPATCH_RATIO_PCT as u32) * MAXIMUM_BLOCK_WEIGHT);
 			})
 			.for_class(DispatchClass::Operational, |weights| {
 				weights.max_total = Some(MAXIMUM_BLOCK_WEIGHT);
 				// Operational transactions have some extra reserved space, so that they
 				// are included even if block reached `MAXIMUM_BLOCK_WEIGHT`.
 				weights.reserved = Some(
-					MAXIMUM_BLOCK_WEIGHT - NORMAL_DISPATCH_RATIO * MAXIMUM_BLOCK_WEIGHT
+					MAXIMUM_BLOCK_WEIGHT - Perbill::from_percent(NORMAL_DISPATCH_RATIO_PCT as u32) * MAXIMUM_BLOCK_WEIGHT
 				);
 			})
 			.avg_block_initialization(AVERAGE_ON_INITIALIZE_RATIO)
 			.build_or_panic();
 	}
-	const_assert!(NORMAL_DISPATCH_RATIO.deconstruct() >= AVERAGE_ON_INITIALIZE_RATIO.deconstruct());
+	const_assert!(
+		Perbill::from_percent(NORMAL_DISPATCH_RATIO_PCT as u32).deconstruct()
+			>= AVERAGE_ON_INITIALIZE_RATIO.deconstruct()
+	);
 }
 
 pub mod indices {
