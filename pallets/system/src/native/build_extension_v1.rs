@@ -12,7 +12,7 @@ use avail_base::metrics::avail::{
 use avail_core::{
 	app_extrinsic::AppExtrinsic,
 	block::header::{self, HeaderExtension, HeaderVersion},
-	kate_commitment as kc,
+	block::kate as kc,
 };
 use kate::{
 	couscous::multiproof_params,
