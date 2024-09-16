@@ -900,6 +900,7 @@ dependencies = [
  "avail-core-substrate",
  "hash256-std-hasher",
  "parity-scale-codec",
+ "parity-scale-codec-derive",
  "scale-info",
  "serde",
  "sp-core",
