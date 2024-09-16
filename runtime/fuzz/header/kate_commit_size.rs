@@ -10,7 +10,7 @@ use std::{
 	panic,
 };
 
-use avail_core::block::header::HeaderExtension;
+use avail_core_block::header::HeaderExtension;
 use da_control::{pallet::Call as DaControlCall, AppDataFor, CheckAppId};
 use da_runtime::{
 	AppId, Executive, Header, Runtime, RuntimeCall, RuntimeGenesisConfig, SignedExtra,

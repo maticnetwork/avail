@@ -149,4 +149,4 @@ pub type MockBlock<T> = generic::Block<
 >;
 
 /// An implementation of `sp_runtime::traits::Block` with DA header to be used in tests
-pub type MockDaBlock<T> = avail_core::block::DaBlock<MockUncheckedExtrinsic<T>>;
+pub type MockDaBlock<T> = avail_core_block::DaBlock<MockUncheckedExtrinsic<T>>;

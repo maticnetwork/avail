@@ -101,7 +101,7 @@ pub trait HostedKate {
 
 		// let orig_dims = non_extended_dims(grid.dims()).ok_or(Error::InvalidDimension)?;
 		let dims = grid.dims();
-		let Some(rows) = grid.app_rows(AppId(app_id), Some(dims))? else {
+		let Some(rows) = grid.app_rows(app_id, Some(dims))? else {
 			return Err(Error::AppRow);
 		};
 

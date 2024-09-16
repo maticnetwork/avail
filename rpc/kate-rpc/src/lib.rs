@@ -1,6 +1,7 @@
 use avail_base::metrics::avail::{MetricObserver, ObserveKind};
+use avail_core_block::{header::HeaderExtension, ExtendedHeader};
 use avail_core::{
-	block::header::HeaderExtension, block::ExtendedHeader, data_proof::ProofResponse,
+	data_proof::ProofResponse,
 	OpaqueExtrinsic,
 };
 use da_runtime::apis::{DataAvailApi, KateApi as RTKateApi};

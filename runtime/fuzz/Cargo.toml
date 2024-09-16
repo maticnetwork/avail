@@ -38,6 +38,7 @@ sp-keyring = { workspace = true, default-features = false }
 sp-runtime = { workspace = true, default-features = false }
 
 avail-core = { workspace = true, default-features = false }
+avail-core-block = { workspace = true, default-features = false }
 da-control = { path = "../../pallets/dactr", default-features = false }
 da-runtime = { path = "../", default-features = false }
 

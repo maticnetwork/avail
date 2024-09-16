@@ -9,10 +9,9 @@ use crate::limits::BlockLength;
 use avail_base::metrics::avail::{
 	HeaderExtensionBuilderMetrics as Metrics, MetricObserver, ObserveKind,
 };
+use avail_core_block::{kate as kc, header::{self, HeaderExtension, HeaderVersion}};
 use avail_core::{
 	app_extrinsic::AppExtrinsic,
-	block::header::{self, HeaderExtension, HeaderVersion},
-	block::kate as kc,
 };
 use kate::{
 	couscous::multiproof_params,

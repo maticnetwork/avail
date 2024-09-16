@@ -1,4 +1,5 @@
-use avail_core::{asdr::AppUncheckedExtrinsic, block::header::Header as DaHeader, OpaqueExtrinsic};
+use avail_core_block::header::Header as DaHeader;
+use avail_core::{asdr::AppUncheckedExtrinsic, OpaqueExtrinsic};
 use sp_runtime::{
 	generic, impl_opaque_keys,
 	traits::{BlakeTwo256, IdentifyAccount, Verify},
@@ -34,7 +35,7 @@ pub type Header = DaHeader;
 /// Unchecked extrinsic type as expected by this runtime.
 pub type UncheckedExtrinsic = AppUncheckedExtrinsic<Address, RuntimeCall, Signature, SignedExtra>;
 /// DA Block type as expected by this runtime.
-pub type Block = avail_core::block::DaBlock<UncheckedExtrinsic>;
+pub type Block = avail_core_block::DaBlock<UncheckedExtrinsic>;
 /// Block type for the node
 pub type NodeBlock = generic::Block<Header, OpaqueExtrinsic>;
 /// A Block signed with a Justification

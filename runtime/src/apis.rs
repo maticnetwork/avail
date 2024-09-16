@@ -6,8 +6,8 @@ use crate::{
 	TransactionPayment, LOG_TARGET,
 };
 use avail_base::{HeaderExtensionBuilderData, ProvidePostInherent};
+use avail_core_block::{header::HeaderExtension};
 use avail_core::{
-	block::header::HeaderExtension,
 	currency::Balance,
 	data_proof::{DataProof, ProofResponse, SubTrie},
 	OpaqueExtrinsic,

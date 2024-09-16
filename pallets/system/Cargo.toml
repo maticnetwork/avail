@@ -19,6 +19,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 # Our deps.
 avail-base = { workspace = true, default-features = false }
 avail-core = { workspace = true, default-features = false }
+avail-core-block = { workspace = true, default-features = false }
 kate = { workspace = true, default-features = false }
 
 # Other

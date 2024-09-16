@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use avail_core::block::header::Header as DaHeader;
+use avail_core_block::header::Header as DaHeader;
 use frame_support::{derive_impl, parameter_types, traits::ConstU32};
 use sp_core::H256;
 use sp_runtime::{

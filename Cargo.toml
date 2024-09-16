@@ -26,6 +26,7 @@ homepage = "https://www.availproject.org/"
 # kate = { git = "https://github.com/availproject/avail-core", tag = "core-node-2", default-features = false }
 # kate-recovery = { git = "https://github.com/availproject/avail-core", tag = "core-node-2", default-features = false  }
 avail-core = { path = "../core/core", default-features = false, features = [ "runtime"] }
+avail-core-block = { path = "../core/block", default-features = false, features = [ "runtime"] }
 kate = { path = "../core/kate/", default-features = false }
 kate-recovery = { path = "../core/kate/recovery/", default-features = false}
 

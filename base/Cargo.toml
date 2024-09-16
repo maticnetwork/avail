@@ -11,6 +11,7 @@ workspace = true
 
 [dependencies]
 avail-core = { workspace = true, default-features = false }
+avail-core-block = { workspace = true, default-features = false }
 
 # Substrate related
 codec = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }

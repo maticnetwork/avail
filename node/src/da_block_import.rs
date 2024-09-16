@@ -5,8 +5,9 @@
 /// It double-checks the **extension header** which contains the `Kate Commitment` and `Data
 /// Root`.
 use avail_base::metrics::avail::{MetricObserver, ObserveKind};
+use avail_core_block::header::HeaderExtension;
 use avail_core::{
-	block::header::HeaderExtension, ensure, BlockLengthColumns, BlockLengthRows, OpaqueExtrinsic,
+	ensure, BlockLengthColumns, BlockLengthRows, OpaqueExtrinsic,
 	BLOCK_CHUNK_SIZE,
 };
 use da_runtime::{

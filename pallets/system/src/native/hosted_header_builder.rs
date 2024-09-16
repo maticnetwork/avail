@@ -3,8 +3,8 @@
 // !!!!
 
 use crate::{limits::BlockLength, Config, LOG_TARGET};
+use avail_core_block::{header::HeaderExtension, header::HeaderVersion, ExtendedHeader};
 use avail_core::{
-	block::header::HeaderExtension, block::header::HeaderVersion, block::ExtendedHeader,
 	AppExtrinsic,
 };
 pub use kate::{
@@ -23,7 +23,7 @@ pub const MIN_WIDTH: usize = 4;
 pub mod da {
 	use core::marker::PhantomData;
 
-	use avail_core::block::header::{Header as DaHeader, HeaderExtension};
+	use avail_core_block::header::{Header as DaHeader, HeaderExtension};
 	use sp_runtime::traits::BlakeTwo256;
 
 	use super::*;

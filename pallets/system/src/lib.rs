@@ -99,9 +99,8 @@
 #![warn(unused_extern_crates)]
 
 use avail_base::{HeaderExtensionBuilderData, HeaderExtensionDataFilter};
+use avail_core_block::{header::{Header as DaHeader, HeaderExtension}, ExtendedBlock, ExtendedHeader};
 use avail_core::{
-	block::header::{Header as DaHeader, HeaderExtension},
-	block::{ExtendedBlock, ExtendedHeader},
 	ensure,
 	traits::{GetAppId, MaybeCaller},
 };
