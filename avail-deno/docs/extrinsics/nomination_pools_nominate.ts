@@ -8,7 +8,7 @@ const account = new Keyring({ type: "sr25519" }).addFromUri("//Alice");
 const validators: string[] = ["5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY", "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy"];
 const poolId = 1;
 
-const result = await sdk.tx.nomination_pools.nominate(poolId, validators, WaitFor.BlockInclusion, account);
+const result = await sdk.tx.nominationPools.nominate(poolId, validators, WaitFor.BlockInclusion, account);
 if (result.isErr) {
 	console.log(result.reason);
 	Deno.exit(1);

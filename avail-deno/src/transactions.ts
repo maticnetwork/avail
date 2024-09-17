@@ -1,10 +1,11 @@
-import { ApiPromise } from "https://deno.land/x/polkadot@0.2.45/api/mod.ts";
-import { KeyringPair } from "https://deno.land/x/polkadot@0.2.45/keyring/types.ts";
-import { ISubmittableResult } from "https://deno.land/x/polkadot@0.2.45/types/types/extrinsic.ts";
-import { SignerOptions } from "https://deno.land/x/polkadot@0.2.45/api/submittable/types.ts";
-import { EventRecord, H256 } from "https://deno.land/x/polkadot@0.2.45/types/interfaces/types.ts";
-import { BN } from "https://deno.land/x/polkadot@0.2.45/util/mod.ts";
-import { err, ok, Result } from "npm:neverthrow@6.2.2";
+import type { ApiPromise } from "@polkadot/api";
+import type { KeyringPair } from "@polkadot/keyring/types";
+import type { ISubmittableResult } from "@polkadot/types/types/extrinsic";
+import type { SignerOptions } from "@polkadot/api/submittable/types";
+import type { EventRecord, H256 } from "@polkadot/types/interfaces/types";
+import type { BN } from "@polkadot/util";
+import { err, ok } from "@neverthrow";
+import type { Result } from "@neverthrow";
 
 import * as TransactionData from "./transaction_data.ts";
 import * as Events from "./events.ts";
@@ -214,14 +215,14 @@ export class Transactions {
 	dataAvailability: DataAvailability;
 	balances: Balances;
 	staking: Staking;
-	nomination_pools: NominationPools;
+	nominationPools: NominationPools;
 
 	constructor(api: ApiPromise) {
 		this.api = api;
 		this.dataAvailability = new DataAvailability(api);
 		this.balances = new Balances(api);
 		this.staking = new Staking(api);
-		this.nomination_pools = new NominationPools(api);
+		this.nominationPools = new NominationPools(api);
 	}
 }
 

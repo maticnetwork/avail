@@ -1054,7 +1054,7 @@ const root: string = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"; // Alic
 const nominator: string = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"; // Alice
 const bouncer: string = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"; // Alice
 
-const result = await sdk.tx.nomination_pools.create(amount, root, nominator, bouncer, WaitFor.BlockInclusion, account);
+const result = await sdk.tx.nominationPools.create(amount, root, nominator, bouncer, WaitFor.BlockInclusion, account);
 if (result.isErr) {
 	console.log(result.reason);
 	Deno.exit(1);
@@ -1141,7 +1141,7 @@ const nominator: string = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"; //
 const bouncer: string = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"; // Alice
 const poolId = 0;
 
-const result = await sdk.tx.nomination_pools.createWithPoolId(amount, root, nominator, bouncer, poolId, WaitFor.BlockInclusion, account);
+const result = await sdk.tx.nominationPools.createWithPoolId(amount, root, nominator, bouncer, poolId, WaitFor.BlockInclusion, account);
 if (result.isErr) {
 	console.log(result.reason);
 	Deno.exit(1);
@@ -1216,7 +1216,7 @@ const account = new Keyring({ type: "sr25519" }).addFromUri("//Bob");
 const amount = new BN(10).pow(new BN(18)).mul(new BN(10000)); // 10_000 Avail
 const poolId = 1;
 
-const result = await sdk.tx.nomination_pools.join(amount, poolId, WaitFor.BlockInclusion, account);
+const result = await sdk.tx.nominationPools.join(amount, poolId, WaitFor.BlockInclusion, account);
 if (result.isErr) {
 	console.log(result.reason);
 	Deno.exit(1);
@@ -1287,7 +1287,7 @@ const account = new Keyring({ type: "sr25519" }).addFromUri("//Alice");
 const validators: string[] = ["5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY", "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy"];
 const poolId = 1;
 
-const result = await sdk.tx.nomination_pools.nominate(poolId, validators, WaitFor.BlockInclusion, account);
+const result = await sdk.tx.nominationPools.nominate(poolId, validators, WaitFor.BlockInclusion, account);
 if (result.isErr) {
 	console.log(result.reason);
 	Deno.exit(1);

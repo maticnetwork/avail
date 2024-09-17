@@ -1,6 +1,6 @@
-import { ApiPromise, Keyring, WsProvider } from "https://deno.land/x/polkadot@0.2.45/api/mod.ts";
+import { ApiPromise, Keyring, WsProvider } from "@polkadot/api/mod.ts";
 import { API_EXTENSIONS, API_RPC, API_TYPES } from "./api_options.ts";
-import { ISubmittableResult } from "https://deno.land/x/polkadot@0.2.45/types/types/extrinsic.ts";
+import { ISubmittableResult } from "@polkadot/types/types/extrinsic.ts";
 import { ethers } from "npm:ethers@5.4";
 
 import ABI from "./abi/availbridge.json" with { type: "json" };

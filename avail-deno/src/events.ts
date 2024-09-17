@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-namespace
 
-import { EventRecord } from "https://deno.land/x/polkadot@0.2.45/types/interfaces/types.ts";
-import { BN } from "https://deno.land/x/polkadot@0.2.45/util/mod.ts";
+import type { EventRecord } from "@polkadot/types/interfaces/types";
+import { BN } from "@polkadot/util";
 import { fromHexToAscii } from "./common.ts";
 
 export namespace DataAvailability {

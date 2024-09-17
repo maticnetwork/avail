@@ -11,7 +11,7 @@ const root: string = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"; // Alic
 const nominator: string = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"; // Alice
 const bouncer: string = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"; // Alice
 
-const result = await sdk.tx.nomination_pools.create(amount, root, nominator, bouncer, WaitFor.BlockInclusion, account);
+const result = await sdk.tx.nominationPools.create(amount, root, nominator, bouncer, WaitFor.BlockInclusion, account);
 if (result.isErr) {
 	console.log(result.reason);
 	Deno.exit(1);

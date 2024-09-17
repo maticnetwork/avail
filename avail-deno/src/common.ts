@@ -1,5 +1,6 @@
-import { ApiPromise } from "https://deno.land/x/polkadot@0.2.45/api/mod.ts";
-import { err, ok, Result } from "npm:neverthrow@6.2.2";
+import type { ApiPromise } from "@polkadot/api";
+import { err, ok } from "@neverthrow";
+import type { Result } from "@neverthrow";
 
 export function fromHexToAscii(hex: string): string {
 	let str = "";

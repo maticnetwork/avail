@@ -1,0 +1,12 @@
+{
+  "name": "@avail/deno",
+  "version": "0.1.0",
+  "exports": "./src/sdk.ts",
+  "imports": {
+    "@polkadot/util": "npm:@polkadot/util@13.1.1",
+    "@polkadot/api": "npm:@polkadot/api@13.0.1",
+    "@polkadot/types": "npm:@polkadot/types@13.0.1",
+    "@polkadot/keyring": "npm:@polkadot/keyring@13.0.1",
+    "@neverthrow": "npm:neverthrow@6.2.2"
+  }
+}

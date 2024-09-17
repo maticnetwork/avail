@@ -1,8 +1,9 @@
 // deno-lint-ignore-file no-namespace
 
-import { ApiPromise } from "https://deno.land/x/polkadot@0.2.45/api/mod.ts";
-import { H256 } from "https://deno.land/x/polkadot@0.2.45/types/interfaces/types.ts";
-import { err, ok, Result } from "npm:neverthrow@6.2.2";
+import type { ApiPromise } from "@polkadot/api";
+import type { H256 } from "@polkadot/types/interfaces/types";
+import { err, ok } from "@neverthrow";
+import type { Result } from "@neverthrow";
 
 export namespace DataAvailability {
 	export class SubmitData {

@@ -1,8 +1,8 @@
 /// The example showcases how to programmatically estimate transactions fee.
 ///
 
-import { ApiPromise, WsProvider } from "https://deno.land/x/polkadot@0.2.45/api/mod.ts";
-import { BN } from "https://deno.land/x/polkadot@0.2.45/util/mod.ts";
+import { ApiPromise, WsProvider } from "@polkadot/api/mod.ts";
+import { BN } from "@polkadot/util/mod.ts";
 import { API_EXTENSIONS, API_RPC, API_TYPES } from "../src/api_options.ts";
 
 const api = await ApiPromise.create({
