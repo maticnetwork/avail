@@ -1,7 +1,12 @@
 # Avail SDK documentation / examples
 
 This directory contains documentation and examples related to the opinionated SDK and additional functionalities provided by the `avail-js-sdk`.
-The following scripts have been tested with `ts-node v10.9.2 node v20.11.1 (npm v10.2.4)`.
+
+## Requirements
+
+- Node.js: v20.11.1 or higher
+- npm: v10.2.4 or higher
+- ts-node: v10.9.2 or higher
 
 ## Running Examples in the Docs Directory
 
@@ -19,25 +24,50 @@ npm i -g ts-node
 npm install
 ```
 
-3. Ensure you're running a local Avail node. You can do this with the following command from the root directory:
+3. Start a local Avail node. You have two options:
+
+   a. Build and run from source:
+   ```bash
+   cargo build --release
+   ./target/release/avail-node --dev
+   ```
+
+   b. Download and run the latest release:
+   - Download from [Github Releases](https://github.com/availproject/avail/releases)
+   - Extract and run the binary:
+   ```bash
+   ./avail-node --dev
+   ```
+
+4. Run example scripts:
 
 ```bash
-cargo build --release
-./target/release/avail-node --dev
-```
-
-You can also take the latest release from [Github](https://github.com/availproject/avail/releases)
-
-4. To run any example script from the docs/extrinsics folder, use the following command format, replacing NAME_OF_THE_FILE with the actual file name you want to run:
-
-```bash
+# General format
 ts-node ./docs/extrinsics/NAME_OF_THE_FILE.ts
-```
 
-For example, to run the staking_nominate.ts script:
-
-```bash
+# Example
 ts-node ./docs/extrinsics/staking_nominate.ts
 ```
 
-This will execute the chosen example script, showcasing how to interact with the Avail network using the avail-js-sdk.
+## Available Examples
+
+The following examples are available in the `docs/extrinsics` directory:
+
+- `staking_nominate.ts` - Demonstrates staking and nomination
+- `session.ts` - Session management examples
+- `multisig.ts` - Multi-signature transaction examples
+- `nomination_pools.ts` - Nomination pool interactions
+- `da.ts` - Data Availability examples
+
+Each example demonstrates how to interact with different aspects of the Avail network using the avail-js-sdk.
+
+## Troubleshooting
+
+If you encounter any issues:
+
+1. Ensure your Node.js version matches the requirements
+2. Clear the node_modules folder and run `npm install` again
+3. Check that your local Avail node is running and accessible
+4. Verify your network connectivity
+
+For more detailed information, visit the [Avail Documentation](https://docs.availproject.org/)
