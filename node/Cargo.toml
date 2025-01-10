@@ -116,6 +116,8 @@ tempfile.workspace = true
 default = [ "cli" ]
 header_commitment_corruption = [ "da-runtime/header_commitment_corruption" ]
 fast-runtime = [ "da-runtime/fast-runtime" ]
+# Enables grandpa_blockJustification RPC & the cli options associated with it
+grandpa-justifications = [ "kate-rpc/grandpa-justifications" ]
 testing-environment = [ "da-runtime/testing-environment" ]
 cli = [ "clap", "clap-num", "clap_complete", "frame-benchmarking-cli" ]
 runtime-benchmarks = [

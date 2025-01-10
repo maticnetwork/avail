@@ -18,6 +18,4 @@ sc-client-api = { workspace = true, default-features = false }
 
 [features]
 default = [ "std" ]
-std = [
-	"avail-base/std",
-]
+std = [ "avail-base/std" ]

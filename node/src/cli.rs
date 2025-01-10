@@ -58,24 +58,26 @@ pub struct Cli {
 	/// Max size cannot exceed 10_000
 	#[arg(long, default_value_t = 64, value_parser=kate_max_cells_size_upper_bound)]
 	pub kate_max_cells_size: usize,
+
+	/// The interval, in blocks, at which Grandpa justifications are either imported or generated and stored in the backend.
+	#[cfg(feature = "grandpa-justifications")]
+	#[arg(long, default_value_t =512, value_parser=grandpa_justification_period_bounds)]
+	pub grandpa_justification_period: u32,
 }
 
 fn kate_max_cells_size_upper_bound(s: &str) -> Result<usize, String> {
 	clap_num::number_range(s, 0, 10_000)
 }
 
+#[cfg(feature = "grandpa-justifications")]
+fn grandpa_justification_period_bounds(s: &str) -> Result<u32, String> {
+	clap_num::number_range(s, 1, u32::MAX)
+}
+
 /// Possible subcommands of the main binary.
 #[allow(clippy::large_enum_variant)]
 #[derive(Debug, clap::Subcommand)]
 pub enum Subcommand {
-	/*
-	/// The custom inspect subcommand for decoding blocks and extrinsics.
-	#[command(
-		name = "inspect",
-		about = "Decode given block or extrinsic using current native runtime."
-	)]
-	Inspect(node_inspect::cli::InspectCmd),
-	*/
 	/// Sub-commands concerned with benchmarking.
 	/// The pallet benchmarking moved to the `pallet` sub-command.
 	#[command(subcommand)]
@@ -125,4 +127,23 @@ pub enum Subcommand {
 
 	/// Db meta columns information.
 	ChainInfo(sc_cli::ChainInfoCmd),
+}
+
+impl Cli {
+	/// Partially clones the Cli options, excluding the subcommand.
+	/// WARNING: Use with caution and only if you're certain about its effects.
+	pub fn partial_clone(&self) -> Cli {
+		Cli {
+			subcommand: None,
+			run: self.run.clone(),
+			no_hardware_benchmarks: self.no_hardware_benchmarks,
+			unsafe_da_sync: self.unsafe_da_sync,
+			storage_monitor: self.storage_monitor.clone(),
+			kate_rpc_enabled: self.kate_rpc_enabled,
+			kate_rpc_metrics_enabled: self.kate_rpc_metrics_enabled,
+			kate_max_cells_size: self.kate_max_cells_size,
+			#[cfg(feature = "grandpa-justifications")]
+			grandpa_justification_period: self.grandpa_justification_period,
+		}
+	}
 }

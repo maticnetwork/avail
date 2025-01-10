@@ -169,10 +169,7 @@ pub fn create_extrinsic(
 #[allow(clippy::type_complexity)]
 pub fn new_partial(
 	config: &Configuration,
-	unsafe_da_sync: bool,
-	kate_max_cells_size: usize,
-	kate_rpc_enabled: bool,
-	kate_rpc_metrics_enabled: bool,
+	cli: Cli,
 ) -> Result<
 	sc_service::PartialComponents<
 		FullClient,
@@ -248,9 +245,14 @@ pub fn new_partial(
 		client.clone(),
 	);
 
+	#[cfg(not(feature = "grandpa-justifications"))]
+	let grandpa_justification_period = GRANDPA_JUSTIFICATION_PERIOD;
+	#[cfg(feature = "grandpa-justifications")]
+	let grandpa_justification_period = cli.grandpa_justification_period;
+
 	let (grandpa_block_import, grandpa_link) = sc_consensus_grandpa::block_import(
 		client.clone(),
-		GRANDPA_JUSTIFICATION_PERIOD,
+		grandpa_justification_period,
 		&(client.clone() as Arc<_>),
 		select_chain.clone(),
 		telemetry.as_ref().map(|x| x.handle()),
@@ -263,7 +265,7 @@ pub fn new_partial(
 		client.clone(),
 	)?;
 
-	let da_block_import = BlockImport::new(client.clone(), block_import, unsafe_da_sync);
+	let da_block_import = BlockImport::new(client.clone(), block_import, cli.unsafe_da_sync);
 
 	let slot_duration = babe_link.config().slot_duration();
 	let (import_queue, babe_worker_handle) =
@@ -330,9 +332,9 @@ pub fn new_partial(
 					subscription_executor,
 					finality_provider: finality_proof_provider.clone(),
 				},
-				kate_max_cells_size,
-				kate_rpc_enabled,
-				kate_rpc_metrics_enabled,
+				kate_max_cells_size: cli.kate_max_cells_size,
+				kate_rpc_enabled: cli.kate_rpc_enabled,
+				kate_rpc_metrics_enabled: cli.kate_rpc_metrics_enabled,
 			};
 
 			node_rpc::create_full(deps, rpc_backend.clone()).map_err(Into::into)
@@ -375,10 +377,7 @@ pub fn new_full_base(
 	config: Configuration,
 	disable_hardware_benchmarks: bool,
 	with_startup_data: impl FnOnce(&BlockImport, &sc_consensus_babe::BabeLink<Block>),
-	unsafe_da_sync: bool,
-	kate_max_cells_size: usize,
-	kate_rpc_enabled: bool,
-	kate_rpc_metrics_enabled: bool,
+	cli: Cli,
 ) -> Result<NewFullBase, ServiceError> {
 	let hwbench = if !disable_hardware_benchmarks {
 		config.database.path().map(|database_path| {
@@ -389,6 +388,11 @@ pub fn new_full_base(
 		None
 	};
 
+	#[cfg(not(feature = "grandpa-justifications"))]
+	let grandpa_justification_period = GRANDPA_JUSTIFICATION_PERIOD;
+	#[cfg(feature = "grandpa-justifications")]
+	let grandpa_justification_period = cli.grandpa_justification_period;
+
 	let sc_service::PartialComponents {
 		client,
 		backend,
@@ -398,13 +402,7 @@ pub fn new_full_base(
 		select_chain,
 		transaction_pool,
 		other: (rpc_builder, import_setup, rpc_setup, mut telemetry),
-	} = new_partial(
-		&config,
-		unsafe_da_sync,
-		kate_max_cells_size,
-		kate_rpc_enabled,
-		kate_rpc_metrics_enabled,
-	)?;
+	} = new_partial(&config, cli)?;
 
 	let shared_voter_state = rpc_setup;
 	let auth_disc_publish_non_global_ips = config.network.allow_non_globals_in_dht;
@@ -582,7 +580,7 @@ pub fn new_full_base(
 	let grandpa_config = sc_consensus_grandpa::Config {
 		// Considering our block_time of 20 seconds, we may consider increasing this to 2 seconds without introducing delay in finality.
 		gossip_duration: std::time::Duration::from_millis(1000),
-		justification_generation_period: GRANDPA_JUSTIFICATION_PERIOD,
+		justification_generation_period: grandpa_justification_period,
 		name: Some(name),
 		observer_enabled: false,
 		keystore,
@@ -655,20 +653,22 @@ pub fn new_full_base(
 /// Builds a new service for a full client.
 pub fn new_full(config: Configuration, cli: Cli) -> Result<TaskManager, ServiceError> {
 	let database_path = config.database.path().map(Path::to_path_buf);
+	let storage_param = cli.storage_monitor.clone();
 	let task_manager = new_full_base(
 		config,
 		cli.no_hardware_benchmarks,
 		|_, _| (),
-		cli.unsafe_da_sync,
-		cli.kate_max_cells_size,
-		cli.kate_rpc_enabled,
-		cli.kate_rpc_metrics_enabled,
+		cli,
+		// cli.unsafe_da_sync,
+		// cli.kate_max_cells_size,
+		// cli.kate_rpc_enabled,
+		// cli.kate_rpc_metrics_enabled,
 	)
 	.map(|NewFullBase { task_manager, .. }| task_manager)?;
 
 	if let Some(database_path) = database_path {
 		sc_storage_monitor::StorageMonitorService::try_spawn(
-			cli.storage_monitor,
+			storage_param,
 			database_path,
 			&task_manager.spawn_essential_handle(),
 		)

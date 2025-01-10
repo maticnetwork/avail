@@ -25,6 +25,8 @@ sp-runtime = { workspace = true, default-features = false }
 
 [features]
 default = [ "std" ]
+# enables grandpa_blockJustification RPC & the cli options associated with it
+grandpa-justifications = []
 std = [
 	"avail-base/std",
 	"avail-core/std",
