@@ -13,7 +13,7 @@ if ! test -f "$DOCKER_FILE"; then
     echo "Supported DISTRO: ubuntu-2004 ubuntu-2204 ubuntu-2404 fedora-39 fedora-40 debian-11 debian-12 arch"
     echo "Supported ARCH: x86_64 arm64"
     echo "Supported ENGINE: docker podman"
-    exit 0
+    exit 1
 fi
 
 echo "Selected distro: $DISTRO"
