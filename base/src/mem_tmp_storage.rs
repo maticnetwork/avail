@@ -9,7 +9,9 @@ pub type StorageMap = BTreeMap<Vec<u8>, Vec<u8>>;
 ////// Runtime Code
 //////
 
-/// TODO docs
+/// A temporary in-memory key-value storage implementation that provides basic storage operations.
+/// This storage is cleared at the beginning of each block building and is not fork-aware.
+/// It can be used for storing auxiliary information that doesn't need to persist across blocks.
 pub struct MemoryTemporaryStorage;
 impl MemoryTemporaryStorage {
 	/// Returns the value under `key` from the memory temporal storage.
@@ -24,12 +26,14 @@ impl MemoryTemporaryStorage {
 			.and_then(|raw| T::decode(&mut raw.as_slice()).ok())
 	}
 
-	/// TODO docs
+	/// Removes a value from the memory temporal storage by its key.
+	/// Returns true if the value was present and removed, false otherwise.
 	pub fn remove(key: &[u8]) -> bool {
 		hosted_mem_tmp_storage::take(key).is_some()
 	}
 
-	/// TODO docs
+	/// Removes and returns the value associated with the given key from the memory temporal storage.
+	/// Returns None if the key doesn't exist.
 	pub fn take<T: Decode>(key: &[u8]) -> Option<T> {
 		hosted_mem_tmp_storage::take(key).and_then(|raw| T::decode(&mut raw.as_slice()).ok())
 	}
