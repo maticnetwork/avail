@@ -1,28 +1,61 @@
-import { MouseEventHandler, useState } from "react"
-import { ApiPromise, initialize, signedExtensions, types } from "avail-js-sdk"
-import { isNumber } from "@polkadot/util"
-import { SignerOptions } from "@polkadot/api/types"
-import Head from "next/head"
+import { MouseEventHandler, useState } from "react";
+import { ApiPromise, initialize, signedExtensions, types } from "avail-js-sdk";
+import { isNumber } from "@polkadot/util";
+import { SignerOptions } from "@polkadot/api/types";
+import Head from "next/head";
+
+// Define the structure of an extension
+interface ExtensionInfo {
+  version: string;
+  enable: () => Promise<void>;
+}
+
+// Define the structure of found extensions
+interface FoundExtensions {
+  [extensionName: string]: ExtensionInfo;
+}
+
+// Extend the Window interface to include `injectedWeb3`
+interface Web3Window extends Window {
+  injectedWeb3?: FoundExtensions;
+}
 
 export default function Home() {
-  const [foundExtensions, setFoundExtensions] = useState<{
-    [extensionName: string]: { version: string; enable: Function }
-  }>({})
-  const [extensionsInitialized, setExtensionsInitialized] = useState<Record<string, boolean>>({})
-  const [availApi, setAvailApi] = useState<ApiPromise | undefined>()
-  const [logs, setLogs] = useState<{ message: string; severity: "info" | "error" }[]>([])
+  // State to store found extensions
+  const [foundExtensions, setFoundExtensions] = useState<FoundExtensions>({});
 
+  // State to track which extensions have been initialized
+  const [extensionsInitialized, setExtensionsInitialized] = useState<Record<string, boolean>>({});
+
+  // State to store the Avail API instance
+  const [availApi, setAvailApi] = useState<ApiPromise | undefined>();
+
+  // State to store logs for UI display
+  const [logs, setLogs] = useState<{ message: string; severity: "info" | "error" }[]>([]);
+
+  // Function to detect and enable extensions
   const findExtension = async () => {
-    // Init Extension
-    const { web3Enable } = await import("@polkadot/extension-dapp")
-    await web3Enable("Example with extension")
+    try {
+      // Dynamically import the `web3Enable` function from the Polkadot extension library
+      const { web3Enable } = await import("@polkadot/extension-dapp");
+      await web3Enable("Example with extension");
 
-    const web3Window = window as any
-    if (web3Window.injectedWeb3 as any) {
-      setFoundExtensions(web3Window.injectedWeb3)
+      // Cast the global `window` object to our custom `Web3Window` interface
+      const web3Window = window as Web3Window;
+
+      // Check if extensions are available and update the state
+      if (web3Window.injectedWeb3) {
+        setFoundExtensions(web3Window.injectedWeb3);
+      } else {
+        addLogs("No extensions found", "info");
+      }
+    } catch (err) {
+      // Handle errors and log them
+      addLogs(`Failed to find extensions: ${err.message}`, "error");
     }
-  }
+  };
 
+  // Function to generate metadata for the injector
   const getInjectorMetadata = (api: ApiPromise) => {
     return {
       chain: api.runtimeChain.toString(),
@@ -34,72 +67,75 @@ export default function Home() {
       chainType: "substrate" as "substrate",
       icon: "substrate",
       types: types as any,
-
-      /** !! IMPORTANT !!
-       * This is the important part, we tell the extension how to handle our signedExtension (even if it seems it's already there)
-       **/
       userExtensions: signedExtensions,
-    }
-  }
+    };
+  };
 
+  // Function to send a transaction using a specific extension
   const sendTx = async (extension: string) => {
     try {
-      // Import extension utils
-      const { web3Accounts, web3FromSource } = await import("@polkadot/extension-dapp")
+      // Dynamically import functions from the Polkadot extension library
+      const { web3Accounts, web3FromSource } = await import("@polkadot/extension-dapp");
 
-      // Init API
-      let api = availApi
+      // Initialize the API if it's not already connected
+      let api = availApi;
       if (!(api && api.isConnected)) {
-        api = await initialize("ws://127.0.0.1:9944")
-        setAvailApi(api)
+        api = await initialize("ws://127.0.0.1:9944");
+        setAvailApi(api);
       }
 
-      // Get correct extension account / injector
-      const accounts = await web3Accounts()
-      const filteredAccounts = accounts.filter((x) => x.meta.source === extension)
-      if (filteredAccounts.length === 0) throw new Error("No account found")
-      const account = filteredAccounts.find((x) => x.address.startsWith("5CDG")) || filteredAccounts[0]
-      const injector = await web3FromSource(account.meta.source)
+      // Fetch accounts and filter by the selected extension
+      const accounts = await web3Accounts();
+      const filteredAccounts = accounts.filter((x) => x.meta.source === extension);
+      if (filteredAccounts.length === 0) throw new Error("No account found");
 
-      // Inject our specific metadata once
-      if (injector.metadata) {
-        if (!extensionsInitialized[extension]) {
-          const metadata = getInjectorMetadata(api)
-          await injector.metadata.provide(metadata)
-          // It would be wise to put this in a persistent storage to not ask everytime
-          setExtensionsInitialized({ ...extensionsInitialized, [injector.name]: true })
-        }
+      // Select the first account that starts with "5CDG" or fallback to the first account
+      const account = filteredAccounts.find((x) => x.address.startsWith("5CDG")) || filteredAccounts[0];
+      const injector = await web3FromSource(account.meta.source);
+
+      // Provide metadata to the injector if it hasn't been initialized
+      if (injector.metadata && !extensionsInitialized[extension]) {
+        const metadata = getInjectorMetadata(api);
+        await injector.metadata.provide(metadata);
+        setExtensionsInitialized((prev) => ({ ...prev, [injector.name]: true }));
       }
 
-      // Send the transaction
-      const tx = api.tx.dataAvailability.submitData("0x123456")
-      addLogs(`Sending tx with account ${account.address} and wallet ${extension}`, "info")
+      // Create and send the transaction
+      const tx = api.tx.dataAvailability.submitData("0x123456");
+      addLogs(`Sending tx with account ${account.address} and wallet ${extension}`, "info");
+
       await tx.signAndSend(
         account.address,
         { signer: injector.signer, app_id: 1 } as Partial<SignerOptions>,
         ({ status, isError, events }) => {
           if (isError) {
-            addLogs("An error has occured, open console to view logs", "error")
-            console.log(events)
+            addLogs("An error has occurred, open console to view logs", "error");
+            console.log(events);
           }
           if (status.isInBlock) {
-            addLogs(`Transaction included in block: ${status.asInBlock}`, "info")
+            addLogs(`Transaction included in block: ${status.asInBlock}`, "info");
           }
-        },
-      )
-    } catch (err: any) {
-      addLogs(err.message ? err.message : err, "error")
+        }
+      );
+    } catch (err) {
+      // Handle errors and log them
+      addLogs(err.message ? err.message : "An unexpected error occurred", "error");
     }
-  }
+  };
 
+  // Function to add logs to the state
   const addLogs = (message: string, severity: "info" | "error") => {
-    setLogs((prevLogs) => [...prevLogs, { message, severity }])
-  }
+    setLogs((prevLogs) => {
+      const newLogs = [...prevLogs, { message, severity }];
+      return newLogs.slice(-50); // Keep only the last 50 logs
+    });
+  };
 
+  // Component to display logs in a table
   const LogsDisplay = () => {
     return (
-      <div style={{ marginTop: "24px" }}>
-        <table style={{ width: "100%" }}>
+      <div style={{ marginTop: "24px", maxHeight: "300px", overflowY: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <tbody>
             {logs.map((log, index) => (
               <tr key={index}>
@@ -108,6 +144,7 @@ export default function Home() {
                     border: "1px solid black",
                     padding: "8px",
                     color: log.severity === "error" ? "red" : "white",
+                    backgroundColor: log.severity === "error" ? "#ffebee" : "#e8f5e9",
                   }}
                 >
                   {log.message}
@@ -117,19 +154,33 @@ export default function Home() {
           </tbody>
         </table>
       </div>
-    )
+    );
+  };
+
+  // Reusable Button component
+  interface ButtonProps {
+    onClick: MouseEventHandler<HTMLButtonElement>;
+    label: string;
+    style?: React.CSSProperties;
   }
 
-  const Button = ({ onClick, label }: { label: string; onClick: MouseEventHandler<HTMLButtonElement> }) => {
+  const Button = ({ onClick, label, style }: ButtonProps) => {
     return (
       <button
-        style={{ marginTop: "12px", border: "1px solid white", padding: "6px", borderRadius: "8px", width: "240px" }}
+        style={{
+          marginTop: "12px",
+          border: "1px solid white",
+          padding: "6px",
+          borderRadius: "8px",
+          width: "240px",
+          ...style,
+        }}
         onClick={onClick}
       >
         {label}
       </button>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -140,14 +191,17 @@ export default function Home() {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
         <h1 style={{ fontSize: "32px" }}>Use extension</h1>
 
+        {/* Button to detect extensions */}
         <Button onClick={() => findExtension()} label={"Detect extensions"} />
 
+        {/* Buttons to send transactions with detected extensions */}
         {Object.keys(foundExtensions).map((extension, i) => {
-          return <Button key={i} onClick={() => sendTx(extension)} label={`Send TX with ${extension}`} />
+          return <Button key={i} onClick={() => sendTx(extension)} label={`Send TX with ${extension}`} />;
         })}
 
+        {/* Display logs if there are any */}
         {logs.length > 0 && <LogsDisplay />}
       </div>
     </>
-  )
+  );
 }
