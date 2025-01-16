@@ -28,7 +28,7 @@ cd $HOME
 ## Downloading light client binary based on system architecture.
 
 export aarch=$(uname -m)
-if [ $aarch == "x86_64" ]
+if [ "$aarch" == "x86_64" ]
 then
     wget https://github.com/availproject/avail-light/releases/download/$LC_TAG/avail-light-linux-amd64.tar.gz 
     tar -xvf avail-light-linux-amd64.tar.gz
@@ -36,7 +36,7 @@ then
     rm avail-light-linux-amd64.tar.gz
 fi
 
-if [ $aarch == "aarch64" ]
+if [ "$aarch" == "aarch64" ]
 then
     wget https://github.com/availproject/avail-light/releases/download/$LC_TAG/avail-light-linux-aarch64.tar.gz 
     tar -xvf avail-light-linux-aarch64.tar.gz
