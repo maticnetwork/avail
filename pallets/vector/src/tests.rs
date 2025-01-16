@@ -1519,44 +1519,44 @@ fn test_fulfill_successfully_sync_committee_not_set() {
 }
 
 // TODO this panics
-// #[test]
-// fn test_fulfill_incorrect_proof() {
-//     new_test_ext().execute_with(|| {
-//         let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(PROOF_FILE).unwrap();
-//         let mut proof = sp1_proof_with_public_values.bytes();
-//         //  make proof incorrect
-//         proof[10] = 0x01;
-//
-//         let public_inputs = sp1_proof_with_public_values.public_values.to_vec();
-//         SP1VerificationKey::<Test>::set(H256(SP1_VERIFICATION_KEY));
-//
-//         let proof_outputs: ProofOutputs = SolValue::abi_decode(&public_inputs, true).unwrap();
-//         let slots_per_period = 8192;
-//         let finality_threshold = 342;
-//         let slot = 6178816u64;
-//         let current_period = slot / slots_per_period;
-//
-//         ConfigurationStorage::<Test>::set(Configuration {
-//             slots_per_period,
-//             finality_threshold: finality_threshold as u16,
-//         });
-//
-//         Updater::<Test>::set(H256(TEST_SENDER_VEC));
-//         SyncCommitteeHashes::<Test>::set(
-//             current_period,
-//             H256::from(proof_outputs.syncCommitteeHash.0),
-//         );
-//
-//         let origin = RuntimeOrigin::signed(TEST_SENDER_VEC.into());
-//         let err = Bridge::fulfill(
-//             origin,
-//             BoundedVec::truncate_from(proof),
-//             BoundedVec::truncate_from(public_inputs),
-//         );
-//
-//         assert_err!(err, Error::<Test>::VerificationFailed);
-//     });
-// }
+#[test]
+fn test_fulfill_incorrect_proof() {
+    new_test_ext().execute_with(|| {
+        let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(PROOF_FILE).unwrap();
+        let mut proof = sp1_proof_with_public_values.bytes();
+        // make proof incorrect by modifying a byte
+        proof[10] = 0x01;
+
+        let public_inputs = sp1_proof_with_public_values.public_values.to_vec();
+        SP1VerificationKey::<Test>::set(H256(SP1_VERIFICATION_KEY));
+
+        let proof_outputs: ProofOutputs = SolValue::abi_decode(&public_inputs, true).unwrap();
+        let slots_per_period = 8192;
+        let finality_threshold = 342;
+        let slot = 6178816u64;
+        let current_period = slot / slots_per_period;
+
+        ConfigurationStorage::<Test>::set(Configuration {
+            slots_per_period,
+            finality_threshold: finality_threshold as u16,
+        });
+
+        Updater::<Test>::set(H256(TEST_SENDER_VEC));
+        SyncCommitteeHashes::<Test>::set(
+            current_period,
+            H256::from(proof_outputs.syncCommitteeHash.0),
+        );
+
+        let origin = RuntimeOrigin::signed(TEST_SENDER_VEC.into());
+        
+        // Assert that the call with incorrect proof fails with the expected error
+        assert_noop!(
+            Vector::fulfill(origin, proof, public_inputs),
+            Error::<Test>::ProofVerificationFailed
+        );
+    });
+}
+
 #[test]
 fn test_fulfill_incorrect_proof_output() {
 	new_test_ext().execute_with(|| {
