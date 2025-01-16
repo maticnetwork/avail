@@ -20,7 +20,7 @@ sp-runtime = { workspace = true, default-features = false }
 sp-std = { workspace = true, default-features = false }
 sp-core = { workspace = true, default-features = false }
 frame-benchmarking = { workspace = true, default-features = false, optional = true }
-sp1-verifier = { version = "3.4.0", default-features = false }
+sp1-verifier = { version = "4.0.0", default-features = false }
 alloy-sol-types = { version = "0.8.12", default-features = false }
 
 ark-bn254.workspace = true
@@ -40,7 +40,7 @@ ethabi.workspace = true
 [dev-dependencies]
 pallet-balances = { workspace = true, default-features = false, features = ["std"] }
 pallet-timestamp = { workspace = true, default-features = false }
-sp1-sdk = { version = "3.4.0", default-features = false }
+sp1-sdk = { version = "4.0.0", default-features = false }
 
 [features]
 default = [ "std" ]

@@ -167,7 +167,7 @@ pub const ROTATE_VK: &str = r#"{"vk_json":{
 // Generated with SP1 Helios https://github.com/succinctlabs/sp1-helios/blob/main/README.md
 // cargo prove key —-elf (sp1 helios elf) in SP1 Helios
 const SP1_VERIFICATION_KEY: [u8; 32] =
-	hex!("00788ce8dc2970920a3d3c072c8c07843d15f1307a53b3dd31b113c3e71c28e8");
+	hex!("00525ee0ed579ba497061070aea9d4918808790c2aa2b5dcb8fe94bdde4ddbb6");
 
 #[benchmarks(where
 [u8; 32]: From << T as frame_system::Config >::AccountId >,
@@ -502,19 +502,20 @@ mod benchmarks {
 
 		let slots_per_period = 8192;
 		let finality_threshold = 342u16;
-		let slot = 6178816u64;
+		let slot = 6724864u64;
+		let current_period = slot / slots_per_period;
+
+		SyncCommitteeHashes::<T>::set(
+			current_period,
+			H256(hex!(
+				"cfde56afdd0992f3fc0a576c2b8959f66a88d47f2886046c104fe6e14da386ac"
+			)),
+		);
+
 		ConfigurationStorage::<T>::set(Configuration {
 			slots_per_period,
 			finality_threshold,
 		});
-
-		let period = slot / slots_per_period;
-		SyncCommitteeHashes::<T>::set(
-			period,
-			H256(hex!(
-				"c00e7928895533bafa24fffba54cc7660664eb0134bffe39932fb28a3ddd4b46"
-			)),
-		);
 
 		Updater::<T>::set(H256(ACCOUNT1));
 		let account = T::AccountId::from(ACCOUNT1);
@@ -633,9 +634,9 @@ fn get_valid_rotate_proof() -> FunctionProof {
 }
 
 fn get_valid_sp1_proof() -> ProofInput {
-	BoundedVec::truncate_from(hex!("0906909023b57ea329344437d01eaa453caa08c01bad6662a15eaf5b1a4f8772e4ce5c180655f20b52a401653cc55ef33311435238f5aae57d5295093b2fafa8ec1949a52d618596b003c3ec290f33f87032a9662fd03c5fae18d93adaf921a2a133e7620fa4cde186d77895b90765ffada8862171398d6d8ec81ac0418c77832fbfdcfd0316ceb5d7a6b371a6438865ad8b66f737a4f702f4ba9487ec3e75ad2bfc68a828cc30d8bb3c035c48ceae35091e41a5417704ef220f1555a2dfd1b72433637c16bb5ed83108bb7d0ba2cce357639d2595c032e991a8a7ebb59737a906ba2abd17e4aa255f659dc7f22c520ea74f62377d6a5342490b3d84c423e573998c7924").to_vec())
+	BoundedVec::truncate_from(hex!("11b6a09d118ac1f4d588d81a97770ff506c49ec0a7819e2cee1d043f76b381b16b4795ea249ad3f7aaccbffcf499a91d1bce5851383c9bf7a75bb95408e5c6bebc3cb8fc2413e6b5c527d5907e89a81cd8a17987208164cc88250db8720d8375a13291fc24f583f49d19d2f40afffd59fb65c40ad32e96fe37ef151150881d7992e039ff0d51180710dbfa3d2dfe87de458cba382ff125da0c3f1855bef9d29488b41c312897b742b907b9c14c04359e8b874fa260a27dc4237e48b0cbe7749b76723813011208a6a9cc0e33d4f027af7a3bfd22622816a4497748da7f7a1a1cc286abcc00e228f365edd0770d67ca3b0d5e0f5f536fff6ebb207fcdb8688af762aff9db").to_vec())
 }
 
 fn get_valid_public_values() -> PublicValuesInput {
-	BoundedVec::truncate_from(hex!("009c4d92c7f0d1a15c9e62d578ee917c8aded8d9d5ab9de1ffa278c00d282f8095eb3a41a42b59787608d52c6aada0b590902283a91144ef47ad6860b92a5c08f4887c7e675fa7c166c1d17e03d0dd746aa595756b66a8fb8d8fad1215d4caaf00000000000000000000000000000000000000000000000000000000005e4800707bf6bc332f8c8dfffa93ea511e2342c5ace8839d68afecc1fc12a116aabda300000000000000000000000000000000000000000000000000000000005d3300c00e7928895533bafa24fffba54cc7660664eb0134bffe39932fb28a3ddd4b46").to_vec())
+	BoundedVec::truncate_from(hex!("711c632bedcfb9b85e6dc1bd53ef7c69753f5836761c69be029b55b8097fd6145a2d22ca66c5c60b6a181d25ea9f54b8669440ef59f71a8caf818b00bbd34c995aaad4aeaf4c830b38bfe4f9f5fe3cfcdad919639b871ea20cf1e7eff30a8a360000000000000000000000000000000000000000000000000000000000669d00d7bd59d9998ade89e28efdd86630633bf71117417aa107163526b8d748d332840000000000000000000000000000000000000000000000000000000000669ce0cfde56afdd0992f3fc0a576c2b8959f66a88d47f2886046c104fe6e14da386ac").to_vec())
 }

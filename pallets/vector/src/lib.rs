@@ -899,7 +899,7 @@ pub mod pallet {
 				if sync_committee_hash != next_sync_committee_hash {
 					ensure!(
 						sync_committee_hash == H256::zero(),
-						Error::<T>::SyncCommitteeAlreadySet
+						Error::<T>::SyncCommitteeHashAlreadySet
 					);
 					SyncCommitteeHashes::<T>::set(next_period, next_sync_committee_hash);
 					Self::deposit_event(Event::SyncCommitteeHashUpdated {
