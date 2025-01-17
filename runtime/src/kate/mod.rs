@@ -2,7 +2,7 @@ pub mod native;
 pub mod runtime;
 
 // Reexport
-pub use runtime::{grid, proof};
+pub use runtime::{grid, multiproof, proof};
 
 use codec::{Decode, Encode};
 use core::num::TryFromIntError;
@@ -20,6 +20,7 @@ use kate::{com::Error as KateError, gridgen::AppRowError as KateAppRowError};
 pub type GRawScalar = U256;
 pub type GRow = Vec<GRawScalar>;
 pub type GDataProof = (GRawScalar, GProof);
+pub type GMultiProof = (Vec<GRawScalar>, GProof);
 
 /// # NOTE
 /// `Serde` requires a custom implementation for `GProof` due to the array size (greater than `[T;32]`).

@@ -11,6 +11,7 @@ da-runtime.workspace = true
 frame-system = { workspace = true, default-features = false }
 avail-core = { workspace = true, default-features = false }
 kate = { workspace = true, default-features = false }
+kate-recovery = { workspace = true, default-features = false }
 
 # 3rd party
 jsonrpsee.workspace = true

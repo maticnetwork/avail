@@ -17,6 +17,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 avail-base = { workspace = true, default-features = false }
 avail-core = { workspace = true, default-features = false }
 kate = { workspace = true, default-features = false }
+kate-recovery = { workspace = true, default-features = false }
 
 da-control = { workspace = true, default-features = false }
 pallet-mandate = { workspace = true, default-features = false }

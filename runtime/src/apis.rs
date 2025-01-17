@@ -1,9 +1,9 @@
 use super::kate::{Error as RTKateError, GDataProof, GRow};
 use crate::{
-	constants, mmr, version::VERSION, AccountId, AuthorityDiscovery, Babe, Block, BlockNumber,
-	EpochDuration, Executive, Grandpa, Historical, Index, InherentDataExt, Mmr, NominationPools,
-	OpaqueMetadata, Runtime, RuntimeCall, RuntimeGenesisConfig, SessionKeys, Staking, System,
-	TransactionPayment, LOG_TARGET,
+	constants, kate::GMultiProof, mmr, version::VERSION, AccountId, AuthorityDiscovery, Babe,
+	Block, BlockNumber, EpochDuration, Executive, Grandpa, Historical, Index, InherentDataExt, Mmr,
+	NominationPools, OpaqueMetadata, Runtime, RuntimeCall, RuntimeGenesisConfig, SessionKeys,
+	Staking, System, TransactionPayment, LOG_TARGET,
 };
 use avail_base::{HeaderExtensionBuilderData, ProvidePostInherent};
 use avail_core::{
@@ -66,6 +66,7 @@ decl_runtime_apis! {
 		fn data_proof(block_number: u32, extrinsics: Vec<OpaqueExtrinsic>, tx_idx: u32) -> Option<ProofResponse>;
 		fn rows(block_number: u32, extrinsics: Vec<OpaqueExtrinsic>, block_len: BlockLength, rows: Vec<u32>) -> Result<Vec<GRow>, RTKateError >;
 		fn proof(block_number: u32, extrinsics: Vec<OpaqueExtrinsic>, block_len: BlockLength, cells: Vec<(u32,u32)> ) -> Result<Vec<GDataProof>, RTKateError>;
+		fn multiproof(block_number: u32, extrinsics: Vec<OpaqueExtrinsic>, block_len: BlockLength, cells: Vec<(u32,u32)> ) -> Result<Vec<GMultiProof>, RTKateError>;
 	}
 }
 
@@ -440,6 +441,13 @@ impl_runtime_apis! {
 		fn proof(block_number: u32, extrinsics: Vec<OpaqueExtrinsic>, block_len: BlockLength, cells: Vec<(u32,u32)> ) -> Result<Vec<GDataProof>, RTKateError> {
 			let app_extrinsics = HeaderExtensionBuilderData::from_opaque_extrinsics::<RTExtractor>(block_number, &extrinsics).to_app_extrinsics();
 			let data_proofs = super::kate::proof::<Runtime>(app_extrinsics, block_len, cells)?;
+			log::trace!(target: LOG_TARGET, "KateApi::proof: data_proofs={data_proofs:#?}");
+			Ok(data_proofs)
+		}
+
+		fn multiproof(block_number: u32, extrinsics: Vec<OpaqueExtrinsic>, block_len: BlockLength, cells: Vec<(u32,u32)> ) -> Result<Vec<GMultiProof>, RTKateError> {
+			let app_extrinsics = HeaderExtensionBuilderData::from_opaque_extrinsics::<RTExtractor>(block_number, &extrinsics).to_app_extrinsics();
+			let data_proofs = super::kate::multiproof::<Runtime>(app_extrinsics, block_len, cells)?;
 			log::trace!(target: LOG_TARGET, "KateApi::proof: data_proofs={data_proofs:#?}");
 			Ok(data_proofs)
 		}
