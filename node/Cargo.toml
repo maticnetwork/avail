@@ -32,7 +32,7 @@ frame-system = { workspace = true, default-features = false }
 sc-basic-authorship.workspace = true
 
 # 3rd-party
-codec = { package = "parity-scale-codec", version = "3" }
+codec = { workspace = true }
 clap = { workspace = true, optional = true }
 clap-num = { workspace = true, optional = true }
 jsonrpsee.workspace = true

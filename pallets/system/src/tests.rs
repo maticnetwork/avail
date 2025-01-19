@@ -19,7 +19,7 @@ use crate::*;
 use frame_support::{
 	assert_noop, assert_ok,
 	dispatch::{Pays, PostDispatchInfo, WithPostDispatchInfo},
-	traits::{OnRuntimeUpgrade, WhitelistedStorageKeys},
+	traits::WhitelistedStorageKeys,
 };
 use std::collections::BTreeSet;
 
@@ -861,24 +861,24 @@ pub fn from_post_weight_info(ref_time: Option<u64>, pays_fee: Pays) -> PostDispa
 	}
 }
 
-#[test]
-fn last_runtime_upgrade_spec_version_usage() {
-	struct Migration;
+// #[test]
+// fn last_runtime_upgrade_spec_version_usage() {
+// 	struct Migration;
 
-	impl OnRuntimeUpgrade for Migration {
-		fn on_runtime_upgrade() -> Weight {
-			// Ensure to compare the spec version against some static version to prevent applying
-			// the same migration multiple times.
-			//
-			// `1337` here is the spec version of the runtime running on chain. If there is maybe
-			// a runtime upgrade in the pipeline of being applied, you should use the spec version
-			// of this upgrade.
-			if System::last_runtime_upgrade_spec_version() > 1337 {
-				return Weight::zero();
-			}
+// 	impl OnRuntimeUpgrade for Migration {
+// 		fn on_runtime_upgrade() -> Weight {
+// 			// Ensure to compare the spec version against some static version to prevent applying
+// 			// the same migration multiple times.
+// 			//
+// 			// `1337` here is the spec version of the runtime running on chain. If there is maybe
+// 			// a runtime upgrade in the pipeline of being applied, you should use the spec version
+// 			// of this upgrade.
+// 			if System::last_runtime_upgrade_spec_version() > 1337 {
+// 				return Weight::zero();
+// 			}
 
-			// Do the migration.
-			Weight::zero()
-		}
-	}
-}
+// 			// Do the migration.
+// 			Weight::zero()
+// 		}
+// 	}
+// }

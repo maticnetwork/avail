@@ -7,15 +7,15 @@ edition = "2021"
 
 [dev-dependencies]
 avail-subxt = { path = "../avail-subxt" }
-kate-recovery = { git = "https://github.com/availproject/avail-core", tag = "core-node-3" }
-kate = { git = "https://github.com/availproject/avail-core", tag = "core-node-3" }
-avail-core = {  git = "https://github.com/availproject/avail-core", tag = "core-node-3" }
+kate-recovery = { git = "https://github.com/availproject/avail-core", branch = "fusion-mvp" }
+kate = { git = "https://github.com/availproject/avail-core", branch = "fusion-mvp" }
+avail-core = {  git = "https://github.com/availproject/avail-core", branch = "fusion-mvp" }
 
 # Parity
-sp-keyring = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
-sp-core = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
+sp-keyring = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }
+sp-core = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }
 codec = { package = "parity-scale-codec", version = "3", default-features = false, features = [ "derive", "full", "bit-vec"] }
-binary-merkle-tree = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
+binary-merkle-tree = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }
 
 # SubXt
 subxt = "0.34"
@@ -36,7 +36,7 @@ tracing = "0.1.40"
 
 # Dependency `subxt` uses it's own 'version' of sp-core so we need to patch it :)
 [patch.crates-io]
-sp-core = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
-sp-io = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
-sp-runtime = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
-sp-std = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
+sp-core = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }
+sp-io = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }
+sp-runtime = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }
+sp-std = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }

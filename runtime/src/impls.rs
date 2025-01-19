@@ -1,17 +1,19 @@
 use crate::{
 	constants, prod_or_fast, voter_bags, weights, AccountId, AccountIndex, Babe, Balances, Block,
-	BlockNumber, ElectionProviderMultiPhase, Everything, Hash, Header, Historical, ImOnline,
-	ImOnlineId, Index, Indices, Moment, NominationPools, Offences, OriginCaller, PalletInfo,
-	Preimage, ReserveIdentifier, Runtime, RuntimeCall, RuntimeEvent, RuntimeFreezeReason,
-	RuntimeHoldReason, RuntimeOrigin, RuntimeVersion, Session, SessionKeys, Signature,
-	SignedPayload, Staking, System, Timestamp, TransactionPayment, Treasury, TxPause,
+	BlockNumber, ElectionProviderMultiPhase, Everything, Fusion, Hash, Header, Historical,
+	ImOnline, ImOnlineId, Index, Indices, Moment, NominationPools, Offences, OriginCaller,
+	PalletInfo, Preimage, ReserveIdentifier, Runtime, RuntimeCall, RuntimeEvent,
+	RuntimeFreezeReason, RuntimeHoldReason, RuntimeOrigin, RuntimeVersion, Session, SessionKeys,
+	Signature, SignedPayload, Staking, System, Timestamp, TransactionPayment, Treasury, TxPause,
 	UncheckedExtrinsic, VoterList, MINUTES, SLOT_DURATION, VERSION,
 };
 use avail_core::{
 	currency::{Balance, AVAIL, CENTS, NANO_AVAIL, PICO_AVAIL},
 	AppId, NORMAL_DISPATCH_RATIO,
 };
+use pallet_staking::UnappliedSlash;
 
+use crate::Vec;
 use codec::{Decode, Encode, MaxEncodedLen};
 use constants::time::DAYS;
 use frame_election_provider_support::{
@@ -44,6 +46,7 @@ use sp_runtime::{
 	traits::{self, BlakeTwo256, Bounded, Convert, IdentityLookup, OpaqueKeys},
 	FixedPointNumber, FixedU128, Perbill, Permill, Perquintill,
 };
+use sp_staking::EraIndex;
 
 pub type NegativeImbalance<T> = <pallet_balances::Pallet<T> as Currency<
 	<T as frame_system::Config>::AccountId,
@@ -137,6 +140,96 @@ impl pallet_offences::Config for Runtime {
 
 impl pallet_authority_discovery::Config for Runtime {
 	type MaxAuthorities = constants::MaxAuthorities;
+}
+
+parameter_types! {
+	pub const FusionPalletId: PalletId = PalletId(*b"avl/fusi");
+	pub const MaxCurrencyNameLength: u32 = 32;
+	pub const MaxMembersPerPool: u32 = 100_000;
+	pub const MaxTargets: u32 = 16;
+	pub const MaxUnbonding: u32 = 8;
+	pub const HistoryDepth: u32 = 84;
+	pub const MaxSlashesPerPool: u32 = 100; // If we have 100 slashes during 27 eras, we have bigger problems
+	pub const MaxPoolsPerValidator: u32 = 100;
+}
+impl pallet_fusion::Config for Runtime {
+	type Currency = Balances;
+	type CurrencyToVote = sp_staking::currency_to_vote::U128CurrencyToVote;
+	type RuntimeCall = RuntimeCall;
+	type RuntimeEvent = RuntimeEvent;
+	type ApprovedOrigin = EitherOfDiverse<
+		EnsureRoot<AccountId>,
+		pallet_collective::EnsureProportionAtLeast<AccountId, TechnicalCollective, 5, 7>,
+	>;
+	type PalletId = FusionPalletId;
+	type MaxCurrencyNameLength = MaxCurrencyNameLength;
+	type MaxMembersPerPool = MaxMembersPerPool;
+	type MaxTargets = MaxTargets;
+	type MaxUnbonding = MaxUnbonding;
+	type MaxSlashesPerPool = MaxSlashesPerPool;
+	type MaxPoolsPerValidator = MaxPoolsPerValidator;
+	type BondingDuration = constants::staking::FusionBondingDuration;
+	type SlashDeferDuration = constants::staking::SlashDeferDuration;
+	type RewardRemainder = Treasury;
+	type HistoryDepth = HistoryDepth;
+	type StakingFusionDataProvider = Self;
+	type PoolAccountProvider = ();
+	type WeightInfo = weights::pallet_fusion::WeightInfo<Runtime>;
+}
+
+impl pallet_fusion::StakingFusionDataProvider<Self> for Runtime {
+	fn active_era() -> EraIndex {
+		pallet_staking::Pallet::<Self>::active_era()
+			.map(|era_info| era_info.index)
+			.unwrap_or(0)
+	}
+	fn current_era() -> EraIndex {
+		pallet_staking::Pallet::<Self>::current_era().unwrap_or_default()
+	}
+	fn is_valid_validator(account: &AccountId) -> bool {
+		pallet_staking::Validators::<Self>::contains_key(account)
+			&& !pallet_staking::Validators::<Self>::get(account).blocked
+	}
+	fn has_earned_era_points(era: EraIndex, accounts: &Vec<AccountId>) -> bool {
+		let era_points = pallet_staking::ErasRewardPoints::<Self>::get(era).individual;
+		accounts
+			.iter()
+			.any(|account| era_points.contains_key(account))
+	}
+	fn unapplied_slashes(era: EraIndex) -> Vec<UnappliedSlash<AccountId, Balance>> {
+		pallet_staking::UnappliedSlashes::<Self>::get(era)
+	}
+	#[cfg(feature = "runtime-benchmarks")]
+	fn add_dummy_validator(account: AccountId) {
+		pallet_session::Validators::<Self>::mutate(|validators| {
+			validators.push(account.clone());
+		});
+
+		let default_prefs = pallet_staking::ValidatorPrefs {
+			commission: Perbill::from_percent(0),
+			blocked: false,
+		};
+		pallet_staking::Validators::<Self>::insert(account.clone(), default_prefs);
+	}
+	#[cfg(feature = "runtime-benchmarks")]
+	fn add_dummy_era_points(validator: AccountId, era: EraIndex) {
+		pallet_staking::ErasRewardPoints::<Self>::mutate(era, |reward_points| {
+			let points = reward_points
+				.individual
+				.entry(validator.clone())
+				.or_insert(0);
+			*points += 100;
+		});
+	}
+	#[cfg(feature = "runtime-benchmarks")]
+	fn set_dummy_active_era(era: EraIndex) {
+		pallet_staking::ActiveEra::<Self>::mutate(|active_era| {
+			*active_era = Some(pallet_staking::ActiveEraInfo {
+				index: era,
+				start: None,
+			});
+		});
+	}
 }
 
 parameter_types! {
@@ -504,13 +597,13 @@ impl pallet_staking::Config for Runtime {
 	type NominationsQuota =
 		pallet_staking::FixedNominationsQuota<{ constants::staking::MaxNominations::get() }>;
 	type OffendingValidatorsThreshold = constants::staking::OffendingValidatorsThreshold;
-	// send the slashed funds to the treasury.
 	type Reward = ();
 	type RewardRemainder = Treasury;
 	type RuntimeEvent = RuntimeEvent;
 	type SessionInterface = Self;
 	// rewards are minted from the void
 	type SessionsPerEra = constants::staking::SessionsPerEra;
+	// send the slashed funds to the treasury.
 	type Slash = Treasury;
 	type SlashDeferDuration = constants::staking::SlashDeferDuration;
 	// This a placeholder, to be introduced in the next PR as an instance of bags-list
@@ -518,6 +611,7 @@ impl pallet_staking::Config for Runtime {
 	type UnixTime = Timestamp;
 	type VoterList = VoterList;
 	type WeightInfo = weights::pallet_staking::WeightInfo<Runtime>;
+	type FusionExt = Fusion;
 }
 
 /// The numbers configured here could always be more than the maximum limits of staking pallet

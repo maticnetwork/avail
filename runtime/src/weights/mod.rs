@@ -2,6 +2,7 @@ pub mod frame_system;
 pub mod pallet_balances;
 pub mod pallet_collective;
 pub mod pallet_dactr;
+pub mod pallet_fusion;
 pub mod pallet_identity;
 pub mod pallet_im_online;
 pub mod pallet_indices;

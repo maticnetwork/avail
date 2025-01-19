@@ -19,6 +19,7 @@ avail-core = { workspace = true, default-features = false }
 kate = { workspace = true, default-features = false }
 
 da-control = { workspace = true, default-features = false }
+pallet-fusion = { workspace = true, default-features = false }
 pallet-mandate = { workspace = true, default-features = false }
 pallet-vector = { workspace = true, default-features = false }
 
@@ -33,7 +34,7 @@ derive_more.workspace = true
 
 # Substrate
 scale-info = { workspace = true, default-features = false, features = [ "derive" ] }
-codec = { package = "parity-scale-codec", version = "3", default-features = false, features = [ "derive", ] }
+codec = { workspace = true, default-features = false, features = [ "derive", ] }
 binary-merkle-tree = { workspace = true, default-features = false }
 
 ## primitives
@@ -139,7 +140,8 @@ default = [ "std" ]
 with-tracing = [ "frame-executive/with-tracing" ]
 fast-runtime = []
 testing-environment = [ "frame-system/testing-environment" ]
-# codspeed = []
+codspeed = []
+secure_padding_fill = []
 header_commitment_corruption = [ "frame-system/header_commitment_corruption" ]
 std = [
 	"avail-base/std",
@@ -163,6 +165,7 @@ std = [
 	"pallet-balances/std",
 	"pallet-collective/std",
 	"pallet-election-provider-multi-phase/std",
+	"pallet-fusion/std",
 	"pallet-grandpa/std",
 	"pallet-identity/std",
 	"pallet-im-online/std",
@@ -219,6 +222,7 @@ runtime-benchmarks = [
 	"pallet-balances/runtime-benchmarks",
 	"pallet-collective/runtime-benchmarks",
 	"pallet-election-provider-multi-phase/runtime-benchmarks",
+	"pallet-fusion/runtime-benchmarks",
 	"pallet-grandpa/runtime-benchmarks",
 	"pallet-identity/runtime-benchmarks",
 	"pallet-im-online/runtime-benchmarks",
@@ -252,6 +256,7 @@ try-runtime = [
 	"pallet-balances/try-runtime",
 	"pallet-collective/try-runtime",
 	"pallet-election-provider-multi-phase/try-runtime",
+	"pallet-fusion/try-runtime",
 	"pallet-grandpa/try-runtime",
 	"pallet-identity/try-runtime",
 	"pallet-im-online/try-runtime",

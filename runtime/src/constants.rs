@@ -234,14 +234,17 @@ pub mod staking {
 	parameter_types! {
 		pub const SessionsPerEra: sp_staking::SessionIndex = 1;
 		pub const BondingDuration: sp_staking::EraIndex = 2; // 2 eras
-		pub const SlashDeferDuration: sp_staking::EraIndex = BondingDuration::get() - 1;
+		pub const FusionBondingDuration: sp_staking::EraIndex = 2; // 2 eras
+		pub const SlashDeferDuration: sp_staking::EraIndex = FusionBondingDuration::get() - 1;
 	}
 
 	#[cfg(not(feature = "fast-runtime"))]
 	parameter_types! {
 		pub const SessionsPerEra: sp_staking::SessionIndex = 6;
 		pub const BondingDuration: sp_staking::EraIndex = 28; // 28 days
-		pub const SlashDeferDuration: sp_staking::EraIndex = BondingDuration::get() - 1; // 27 Days
+		pub const FusionBondingDuration: sp_staking::EraIndex = 7; // 2 days
+		// SlashDeferDuration should be the lowest between FusionBondingDuration and BondingDuration
+		pub const SlashDeferDuration: sp_staking::EraIndex = FusionBondingDuration::get() - 1;
 	}
 
 	parameter_types! {

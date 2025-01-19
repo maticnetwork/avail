@@ -149,6 +149,7 @@ construct_runtime!(
 		Proxy: pallet_proxy = 40,
 		TxPause: pallet_tx_pause = 41,
 		TreasuryCommittee: pallet_collective::<Instance1> = 42,
+		Fusion: pallet_fusion = 43,
 	}
 );
 
@@ -193,6 +194,7 @@ mod benches {
 		[pallet_proxy, crate::Proxy]
 		[pallet_tx_pause, crate::TxPause]
 		[pallet_collective, crate::TreasuryCommittee]
+		[pallet_fusion, crate::Fusion]
 	);
 }
 
@@ -263,6 +265,7 @@ mod tests {
 		<pallet_nomination_pools::Pallet<Runtime> as TryState<BlockNumber>>::try_state(block, All)?;
 		<pallet_proxy::Pallet<Runtime> as TryState<BlockNumber>>::try_state(block, All)?;
 		<pallet_collective::Pallet<Runtime, TreasuryCollective> as TryState<BlockNumber>>::try_state(block, All)?;
+		<pallet_fusion::Pallet<Runtime> as TryState<BlockNumber>>::try_state(block, All)?;
 		Ok(())
 	}
 

@@ -18,7 +18,7 @@ fn commitment_builder(c: &mut Criterion) {
 
 		group.throughput(Throughput::Elements(*columns as u64));
 		group.bench_with_input(
-			BenchmarkId::from_parameter(block_columns),
+			BenchmarkId::from_parameter(format!("{block_columns:?}")),
 			&txs,
 			|b, txs| {
 				b.iter_batched(

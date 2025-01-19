@@ -33,7 +33,7 @@ fn data(count: usize, len: usize) -> Vec<Vec<u8>> {
 /// This example submits an Avail data extrinsic, then retrieves the block containing the
 /// extrinsic and matches the data.
 #[test(tokio::test)]
-async fn main() -> anyhow::Result<()> {
+async fn submit_data() -> anyhow::Result<()> {
 	let _cg = allow_concurrency("submit_data").await;
 	let client = local_connection().await?;
 

@@ -6,7 +6,7 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "3.0.0", default-features = false, features = ["derive"] }
+codec = { workspace = true, default-features = false, features = ["derive"] }
 
 trie-db = { workspace = true, default-features = false }
 hash-db = { workspace = true, default-features = false }

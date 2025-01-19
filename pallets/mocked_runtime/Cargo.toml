@@ -14,7 +14,7 @@ kate = { workspace = true, default-features = false }
 da-control = { workspace = true, default-features = false }
 
 scale-info = { workspace = true, features = ["derive"], default-features = false }
-codec = { package = "parity-scale-codec", version = "3", features = ["derive"], default-features = false }
+codec = { workspace = true, default-features = false, features = ["derive"] }
 parity-util-mem.workspace = true
 derive_more.workspace = true
 serde.workspace = true

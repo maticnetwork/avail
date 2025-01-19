@@ -31,6 +31,7 @@ use sp_runtime::{
 	transaction_validity::{TransactionSource, TransactionValidity},
 	ApplyExtrinsicResult,
 };
+use sp_staking::{EraIndex, Page};
 use sp_std::{borrow::Cow, vec::Vec};
 use sp_version::RuntimeVersion;
 
@@ -372,9 +373,7 @@ impl_runtime_apis! {
 		fn check_if_extrinsic_is_post_inherent(uxt: &<Block as BlockT>::Extrinsic) -> bool {
 			use frame_support::traits::ExtrinsicCall;
 
-			let Ok(xt) =  TryInto::<&RTExtrinsic>::try_into(uxt) else {
-				return false;
-			};
+			let Ok(xt) = TryInto::<&RTExtrinsic>::try_into(uxt);
 
 			let vector_pallet_call = match xt.call() {
 				RuntimeCall::Vector(call) => call,
@@ -473,7 +472,7 @@ impl_runtime_apis! {
 			Staking::api_nominations_quota(balance)
 		}
 
-		fn eras_stakers_page_count(era: sp_staking::EraIndex, account: AccountId) -> sp_staking::Page {
+		fn eras_stakers_page_count(era: EraIndex, account: AccountId) -> Page {
 			Staking::api_eras_stakers_page_count(era, account)
 		}
 	}

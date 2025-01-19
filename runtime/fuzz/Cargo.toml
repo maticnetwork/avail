@@ -22,9 +22,7 @@ rand = "0.8.5"
 afl = { version = "0.15.2", optional = true }
 libfuzzer-sys = { version = "0.4", optional = true }
 
-codec = { package = "parity-scale-codec", version = "3", default-features = false, features = [
-	"derive",
-] }
+codec = { workspace = true, default-features = false, features = ["derive"] }
 frame-support = { workspace = true, default-features = false }
 frame-system = { path = "../../pallets/system", default-features = false }
 pallet-transaction-payment = { workspace = true, default-features = false }
@@ -40,10 +38,10 @@ da-control = { path = "../../pallets/dactr", default-features = false }
 da-runtime = { path = "../", default-features = false }
 
 [features]
-default = [ "std", "use_fuzzer" ]
+default = ["std", "use_fuzzer"]
 # default = [ "std", "use_afl" ]
-use_fuzzer = [ "libfuzzer-sys" ]
-use_afl = [ "afl" ]
+use_fuzzer = ["libfuzzer-sys"]
+use_afl = ["afl"]
 std = [
 	"da-control/std",
 	"da-runtime/std",

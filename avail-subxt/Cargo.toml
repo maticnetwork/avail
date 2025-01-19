@@ -16,7 +16,7 @@ path = "src/e2e.rs"
 
 [dependencies]
 avail-base = { path = "../base" }
-avail-core = { git = "https://github.com/availproject/avail-core", tag = "core-node-3", features = ["serde"] }
+avail-core = { git = "https://github.com/availproject/avail-core", branch = "fusion-mvp", features = ["serde"] }
 
 # Other
 derive_more = "0.99.17"
@@ -40,8 +40,9 @@ serde_json = { version = "1.0", features = ["arbitrary_precision"] }
 
 # Substrate
 subxt = "0.34"
-sp-core = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10", default-features = false }
-sp-runtime = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10", default-features = false }
+subxt-cli = "0.34"
+sp-core = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp", default-features = false }
+sp-runtime = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp", default-features = false }
 codec = { package = "parity-scale-codec", version = "3", default-features = false, features = [
 	"derive",
 	"full",
@@ -51,7 +52,7 @@ scale-info = { version = "2.5.0", features = ["bit-vec"] }
 bounded-collections = { version = "0.2.0", features = ["serde"] }
 
 [dev-dependencies]
-avail-core = {  git = "https://github.com/availproject/avail-core", tag = "core-node-3", features = ["serde", "runtime"] }
+avail-core = {  git = "https://github.com/availproject/avail-core", branch = "fusion-mvp", features = ["serde", "runtime"] }
 
 async-std = { version = "1.12.0", features = ["attributes", "tokio1"] }
 futures = "0.3.13"
@@ -64,17 +65,17 @@ indicatif = "0.17"
 rand = "0.8.5"
 
 # Substrate 
-sp-keyring = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
-binary-merkle-tree = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10", default-features = false }
+sp-keyring = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }
+binary-merkle-tree = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp", default-features = false }
 subxt-signer = "0.34"
 
 # Dependency `subxt` uses it's own 'version' of sp-core so we need to patch it :)
 [patch.crates-io]
-sp-core = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
-sp-io = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
-sp-runtime = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
-sp-std = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
-# frame-metadata = { git = "https://github.com/availproject/polkadot-sdk.git", tag = "polkadot-1.7.1-patch-10" }
+sp-core = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }
+sp-io = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }
+sp-runtime = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }
+sp-std = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }
+# frame-metadata = { git = "https://github.com/availproject/polkadot-sdk.git", branch = "fusion-mvp" }
 
 
 [features]
