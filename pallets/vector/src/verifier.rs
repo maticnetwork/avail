@@ -151,15 +151,8 @@ impl Verifier {
 		output_hash: H256,
 		proof: Vec<u8>,
 	) -> Result<bool, VerificationError> {
-		// remove first 3 bits from input_hash and output_hash
-		let bits_mask = 0b00011111;
-		let mut input_swap = input_hash.to_fixed_bytes();
-		let input_hash_byte_swap = input_hash[0] & bits_mask;
-		input_swap[0] = input_hash_byte_swap;
-
-		let mut output_swap = output_hash.to_fixed_bytes();
-		let output_hash_byte_swap = output_hash[0] & bits_mask;
-		output_swap[0] = output_hash_byte_swap;
+		let input_bytes = input_hash.to_fixed_bytes();
+		let output_bytes = output_hash.to_fixed_bytes();
 
 		let decoded: (Vec<String>, Vec<Vec<String>>, Vec<String>) = decode_proof(proof)?;
 
@@ -167,8 +160,8 @@ impl Verifier {
 		let proof = circom_proof.proof()?;
 
 		let mut input = vec!["0".to_string(); 2];
-		input[0] = U256::from_big_endian(output_swap.as_slice()).to_string();
-		input[1] = U256::from_big_endian(input_swap.as_slice()).to_string();
+		input[0] = U256::from_big_endian(output_bytes.as_slice()).to_string();
+		input[1] = U256::from_big_endian(input_bytes.as_slice()).to_string();
 
 		let public_signals = PublicSignals::from(input);
 
@@ -501,7 +494,7 @@ mod tests {
         ],
         [
             "2320747355788118605608963241136772405889379999161258135797985959373766905799",
-            "7118041328407665643077665093375077236507031390654037220453830314560753892708"
+            "7118041338407665643077665093375077236507031390654037220453830314560753892708"
         ],
         [
             "1",
